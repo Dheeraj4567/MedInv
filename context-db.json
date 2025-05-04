@@ -1,0 +1,397 @@
+{
+  "database": "test2",
+  "tables": {
+    "Medicine": {
+      "columns": [
+        {"name": "medicine_id", "type": "int", "key": "PRI"},
+        {"name": "name", "type": "varchar(255)"},
+        {"name": "price", "type": "decimal(10,2)"},
+        {"name": "manufacturer", "type": "varchar(255)"},
+        {"name": "expiry_date", "type": "date"},
+        {"name": "drug_category_id", "type": "int", "key": "MUL"}
+      ],
+      "relationships": [
+        {"column": "drug_category_id", "references": "DrugCategory.drug_category_id"}
+      ]
+    },
+    "DrugCategory": {
+      "columns": [
+        {"name": "drug_category_id", "type": "int", "key": "PRI"},
+        {"name": "drug_category_name", "type": "varchar(255)", "key": "UNI"},
+        {"name": "common_uses", "type": "text"}
+      ]
+    },
+    "medicinecategories": {
+      "columns": [
+        {"name": "medicine_id", "type": "int"},
+        {"name": "medicine_name", "type": "varchar(255)"},
+        {"name": "drug_category_name", "type": "varchar(255)"},
+        {"name": "common_uses", "type": "text"}
+      ],
+      "note": "This appears to be a view that joins Medicine and DrugCategory tables"
+    },
+    "Inventory": {
+      "columns": [
+        {"name": "inventory_number", "type": "int", "key": "PRI"},
+        {"name": "medicine_id", "type": "int", "key": "MUL"},
+        {"name": "supplier_id", "type": "int", "key": "MUL"},
+        {"name": "quantity", "type": "int"}
+      ],
+      "relationships": [
+        {"column": "medicine_id", "references": "Medicine.medicine_id"},
+        {"column": "supplier_id", "references": "Supplier.supplier_id"}
+      ]
+    },
+    "Supplier": {
+      "columns": [
+        {"name": "supplier_id", "type": "int", "key": "PRI"},
+        {"name": "name", "type": "varchar(255)"},
+        {"name": "location", "type": "varchar(255)"},
+        {"name": "contact", "type": "varchar(255)"}
+      ]
+    },
+    "ActivityLog": {
+      "columns": [
+        {"name": "id", "type": "int", "key": "PRI"},
+        {"name": "action", "type": "varchar(255)"},
+        {"name": "details", "type": "text"},
+        {"name": "type", "type": "varchar(50)"},
+        {"name": "timestamp", "type": "datetime"},
+        {"name": "user_name", "type": "varchar(255)"}
+      ]
+    },
+    "Billing": {
+      "columns": [
+        {"name": "billing_id", "type": "int", "key": "PRI"},
+        {"name": "patient_id", "type": "int", "key": "MUL"},
+        {"name": "date", "type": "date"},
+        {"name": "amount", "type": "decimal(10,2)"},
+        {"name": "status", "type": "varchar(255)"}
+      ],
+      "relationships": [
+        {"column": "patient_id", "references": "Patient.patient_id"}
+      ]
+    },
+    "Employee": {
+      "columns": [
+        {"name": "employee_id", "type": "int", "key": "PRI"},
+        {"name": "name", "type": "varchar(255)"},
+        {"name": "position", "type": "varchar(255)"},
+        {"name": "contact", "type": "varchar(255)"},
+        {"name": "hire_date", "type": "date"}
+      ]
+    },
+    "EmployeeAccounts": {
+      "columns": [
+        {"name": "account_id", "type": "int", "key": "PRI"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "username", "type": "varchar(255)"},
+        {"name": "password_hash", "type": "varchar(255)"},
+        {"name": "role", "type": "varchar(50)"},
+        {"name": "last_login", "type": "datetime"}
+      ],
+      "relationships": [
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
+    "Prescription": {
+      "columns": [
+        {"name": "prescription_id", "type": "int", "key": "PRI"},
+        {"name": "patient_id", "type": "int", "key": "MUL"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "date", "type": "date"},
+        {"name": "notes", "type": "text"}
+      ],
+      "relationships": [
+        {"column": "patient_id", "references": "Patient.patient_id"},
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
+    "PrescriptionItem": {
+      "columns": [
+        {"name": "item_id", "type": "int", "key": "PRI"},
+        {"name": "prescription_id", "type": "int", "key": "MUL"},
+        {"name": "medicine_id", "type": "int", "key": "MUL"},
+        {"name": "dosage", "type": "varchar(255)"},
+        {"name": "frequency", "type": "varchar(255)"},
+        {"name": "duration", "type": "varchar(255)"}
+      ],
+      "relationships": [
+        {"column": "prescription_id", "references": "Prescription.prescription_id"},
+        {"column": "medicine_id", "references": "Medicine.medicine_id"}
+      ]
+    },
+    "Order": {
+      "columns": [
+        {"name": "order_id", "type": "int", "key": "PRI"},
+        {"name": "supplier_id", "type": "int", "key": "MUL"},
+        {"name": "order_date", "type": "date"},
+        {"name": "status", "type": "varchar(255)"},
+        {"name": "total_amount", "type": "decimal(10,2)"}
+      ],
+      "relationships": [
+        {"column": "supplier_id", "references": "Supplier.supplier_id"}
+      ]
+    },
+    "OrderItem": {
+      "columns": [
+        {"name": "order_item_id", "type": "int", "key": "PRI"},
+        {"name": "order_id", "type": "int", "key": "MUL"},
+        {"name": "medicine_id", "type": "int", "key": "MUL"},
+        {"name": "quantity", "type": "int"},
+        {"name": "price_per_unit", "type": "decimal(10,2)"}
+      ],
+      "relationships": [
+        {"column": "order_id", "references": "Order.order_id"},
+        {"column": "medicine_id", "references": "Medicine.medicine_id"}
+      ]
+    },
+    "Patient": {
+      "columns": [
+        {"name": "patient_id", "type": "int", "key": "PRI"},
+        {"name": "name", "type": "varchar(255)"},
+        {"name": "date_of_birth", "type": "date"},
+        {"name": "gender", "type": "varchar(10)"},
+        {"name": "contact", "type": "varchar(255)"},
+        {"name": "address", "type": "text"},
+        {"name": "medical_history", "type": "text"}
+      ]
+    },
+    "ExpiryAlert": {
+      "columns": [
+        {"name": "alert_id", "type": "int", "key": "PRI"},
+        {"name": "inventory_number", "type": "int", "key": "MUL"},
+        {"name": "expiry_date", "type": "date"},
+        {"name": "status", "type": "varchar(255)"}
+      ],
+      "relationships": [
+        {"column": "inventory_number", "references": "Inventory.inventory_number"}
+      ]
+    },
+    "Discount": {
+      "columns": [
+        {"name": "discount_id", "type": "int", "key": "PRI"},
+        {"name": "medicine_id", "type": "int", "key": "MUL"},
+        {"name": "discount_percent", "type": "decimal(5,2)"},
+        {"name": "start_date", "type": "date"},
+        {"name": "end_date", "type": "date"}
+      ],
+      "relationships": [
+        {"column": "medicine_id", "references": "Medicine.medicine_id"}
+      ]
+    },
+    "Feedback": {
+      "columns": [
+        {"name": "feedback_id", "type": "int", "key": "PRI"},
+        {"name": "patient_id", "type": "int", "key": "MUL"},
+        {"name": "feedback_text", "type": "text"},
+        {"name": "rating", "type": "int"},
+        {"name": "date", "type": "datetime"}
+      ],
+      "relationships": [
+        {"column": "patient_id", "references": "Patient.patient_id"}
+      ]
+    },
+    "MedicalLog": {
+      "columns": [
+        {"name": "log_id", "type": "int", "key": "PRI"},
+        {"name": "patient_id", "type": "int", "key": "MUL"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "log_date", "type": "datetime"},
+        {"name": "notes", "type": "text"},
+        {"name": "treatment_details", "type": "text"}
+      ],
+      "relationships": [
+        {"column": "patient_id", "references": "Patient.patient_id"},
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
+    "AnalyticsData": {
+      "columns": [
+        {"name": "data_id", "type": "int", "key": "PRI"},
+        {"name": "data_type", "type": "varchar(255)"},
+        {"name": "data_value", "type": "json"},
+        {"name": "timestamp", "type": "datetime"}
+      ]
+    },
+    "Settings": {
+      "columns": [
+        {"name": "setting_id", "type": "int", "key": "PRI"},
+        {"name": "setting_name", "type": "varchar(255)"},
+        {"name": "setting_value", "type": "text"},
+        {"name": "setting_group", "type": "varchar(255)"}
+      ]
+    },
+    "BillingItem": {
+      "columns": [
+        {"name": "item_id", "type": "int", "key": "PRI"},
+        {"name": "billing_id", "type": "int", "key": "MUL"},
+        {"name": "description", "type": "varchar(255)"},
+        {"name": "quantity", "type": "int"},
+        {"name": "unit_price", "type": "decimal(10,2)"},
+        {"name": "total_price", "type": "decimal(10,2)"}
+      ],
+      "relationships": [
+        {"column": "billing_id", "references": "Billing.billing_id"}
+      ]
+    },
+    "PatientMedication": {
+      "columns": [
+        {"name": "medication_id", "type": "int", "key": "PRI"},
+        {"name": "patient_id", "type": "int", "key": "MUL"},
+        {"name": "medicine_id", "type": "int", "key": "MUL"},
+        {"name": "start_date", "type": "date"},
+        {"name": "end_date", "type": "date"},
+        {"name": "dosage", "type": "varchar(255)"},
+        {"name": "notes", "type": "text"}
+      ],
+      "relationships": [
+        {"column": "patient_id", "references": "Patient.patient_id"},
+        {"column": "medicine_id", "references": "Medicine.medicine_id"}
+      ]
+    },
+    "PatientAppointment": {
+      "columns": [
+        {"name": "appointment_id", "type": "int", "key": "PRI"},
+        {"name": "patient_id", "type": "int", "key": "MUL"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "appointment_date", "type": "datetime"},
+        {"name": "purpose", "type": "varchar(255)"},
+        {"name": "status", "type": "varchar(50)"}
+      ],
+      "relationships": [
+        {"column": "patient_id", "references": "Patient.patient_id"},
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
+    "InventoryLog": {
+      "columns": [
+        {"name": "log_id", "type": "int", "key": "PRI"},
+        {"name": "inventory_number", "type": "int", "key": "MUL"},
+        {"name": "action", "type": "varchar(255)"},
+        {"name": "quantity_change", "type": "int"},
+        {"name": "timestamp", "type": "datetime"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "notes", "type": "text"}
+      ],
+      "relationships": [
+        {"column": "inventory_number", "references": "Inventory.inventory_number"},
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
+    "StockAlert": {
+      "columns": [
+        {"name": "alert_id", "type": "int", "key": "PRI"},
+        {"name": "medicine_id", "type": "int", "key": "MUL"},
+        {"name": "threshold", "type": "int"},
+        {"name": "status", "type": "varchar(50)"},
+        {"name": "last_triggered", "type": "datetime"}
+      ],
+      "relationships": [
+        {"column": "medicine_id", "references": "Medicine.medicine_id"}
+      ]
+    },
+    "SupplierContact": {
+      "columns": [
+        {"name": "contact_id", "type": "int", "key": "PRI"},
+        {"name": "supplier_id", "type": "int", "key": "MUL"},
+        {"name": "name", "type": "varchar(255)"},
+        {"name": "position", "type": "varchar(255)"},
+        {"name": "email", "type": "varchar(255)"},
+        {"name": "phone", "type": "varchar(50)"}
+      ],
+      "relationships": [
+        {"column": "supplier_id", "references": "Supplier.supplier_id"}
+      ]
+    },
+    "PaymentTransaction": {
+      "columns": [
+        {"name": "transaction_id", "type": "int", "key": "PRI"},
+        {"name": "billing_id", "type": "int", "key": "MUL"},
+        {"name": "amount", "type": "decimal(10,2)"},
+        {"name": "payment_date", "type": "datetime"},
+        {"name": "payment_method", "type": "varchar(255)"},
+        {"name": "status", "type": "varchar(50)"}
+      ],
+      "relationships": [
+        {"column": "billing_id", "references": "Billing.billing_id"}
+      ]
+    },
+    "Insurance": {
+      "columns": [
+        {"name": "insurance_id", "type": "int", "key": "PRI"},
+        {"name": "patient_id", "type": "int", "key": "MUL"},
+        {"name": "provider", "type": "varchar(255)"},
+        {"name": "policy_number", "type": "varchar(255)"},
+        {"name": "coverage_details", "type": "text"},
+        {"name": "expiry_date", "type": "date"}
+      ],
+      "relationships": [
+        {"column": "patient_id", "references": "Patient.patient_id"}
+      ]
+    },
+    "DashboardWidget": {
+      "columns": [
+        {"name": "widget_id", "type": "int", "key": "PRI"},
+        {"name": "title", "type": "varchar(255)"},
+        {"name": "widget_type", "type": "varchar(50)"},
+        {"name": "data_source", "type": "varchar(255)"},
+        {"name": "configuration", "type": "json"},
+        {"name": "position", "type": "int"}
+      ]
+    },
+    "NotificationSettings": {
+      "columns": [
+        {"name": "setting_id", "type": "int", "key": "PRI"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "notification_type", "type": "varchar(255)"},
+        {"name": "is_enabled", "type": "boolean"},
+        {"name": "delivery_method", "type": "varchar(50)"}
+      ],
+      "relationships": [
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
+    "Notification": {
+      "columns": [
+        {"name": "notification_id", "type": "int", "key": "PRI"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "message", "type": "text"},
+        {"name": "type", "type": "varchar(50)"},
+        {"name": "is_read", "type": "boolean"},
+        {"name": "created_at", "type": "datetime"}
+      ],
+      "relationships": [
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
+    "Report": {
+      "columns": [
+        {"name": "report_id", "type": "int", "key": "PRI"},
+        {"name": "report_name", "type": "varchar(255)"},
+        {"name": "report_type", "type": "varchar(50)"},
+        {"name": "parameters", "type": "json"},
+        {"name": "created_by", "type": "int", "key": "MUL"},
+        {"name": "created_at", "type": "datetime"},
+        {"name": "last_run", "type": "datetime"}
+      ],
+      "relationships": [
+        {"column": "created_by", "references": "Employee.employee_id"}
+      ]
+    },
+    "ApiKey": {
+      "columns": [
+        {"name": "key_id", "type": "int", "key": "PRI"},
+        {"name": "api_key", "type": "varchar(255)"},
+        {"name": "created_by", "type": "int", "key": "MUL"},
+        {"name": "created_at", "type": "datetime"},
+        {"name": "expires_at", "type": "datetime"},
+        {"name": "permissions", "type": "json"},
+        {"name": "is_active", "type": "boolean"}
+      ],
+      "relationships": [
+        {"column": "created_by", "references": "Employee.employee_id"}
+      ]
+    }
+  }
+}

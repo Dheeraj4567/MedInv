@@ -1,0 +1,417 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Golden Hue Medical Theme - Light */
+    --background: 40 30% 98%; /* Very light gold-tinted background */
+    --foreground: 35 25% 15%; /* Warm dark brown for text */
+    
+    --card: 36 25% 99%; /* Subtle cream for cards */
+    --card-foreground: 35 25% 15%;
+    
+    --popover: 36 25% 99%;
+    --popover-foreground: 35 25% 15%;
+    
+    /* Gold accent as primary color */
+    --primary: 43 85% 55%; 
+    --primary-foreground: 35 25% 15%;
+    
+    /* Secondary gold tone for accents */
+    --accent: 45 95% 60%; 
+    --accent-foreground: 30 15% 15%;
+    
+    --secondary: 40 30% 94%;
+    --secondary-foreground: 35 25% 25%;
+    
+    --muted: 40 25% 94%;
+    --muted-foreground: 35 20% 45%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    
+    --border: 40 25% 85%;
+    --input: 40 25% 90%;
+    --ring: 43 85% 55%; /* Match primary */
+    
+    --radius: 0.75rem;
+    --hover-glow: rgba(230, 185, 70, 0.2);
+    --hover-glow-strong: rgba(230, 185, 70, 0.3);
+    --accent-glow: rgba(234, 179, 8, 0.25);
+
+    --spacing-xs: 0.25rem; /* 4px */
+    --spacing-sm: 0.5rem;  /* 8px */
+    --spacing-md: 1rem;    /* 16px */
+    --spacing-lg: 1.5rem;  /* 24px */
+    --spacing-xl: 2rem;    /* 32px */
+  }
+
+  .dark {
+    /* GitHub-inspired Dark Theme */
+    --background: 220 16% 13%; /* Very dark gray */
+    --foreground: 210 20% 95%; /* Light gray/white */
+    
+    --card: 220 15% 18%; /* Slightly lighter dark gray */
+    --card-foreground: 210 20% 95%;
+    
+    --popover: 220 15% 16%; /* Darker popover */
+    --popover-foreground: 210 20% 95%;
+    
+    /* GitHub-like blue */
+    --primary: 212 92% 58%; 
+    --primary-foreground: 0 0% 100%;
+    
+    /* Subtle gray accent */
+    --accent: 210 15% 45%; 
+    --accent-foreground: 210 20% 95%;
+    
+    --secondary: 220 14% 25%; /* Medium dark gray */
+    --secondary-foreground: 210 15% 85%;
+    
+    --muted: 220 14% 20%; /* Darker muted gray */
+    --muted-foreground: 210 10% 65%; /* Medium gray */
+    
+    /* GitHub-like red */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 13% 30%; /* Subtle border */
+    --input: 220 15% 22%; /* Input background */
+    --ring: 212 92% 58%; /* Match primary */
+    
+    /* Adjusted glows */
+    --hover-glow: rgba(88, 166, 255, 0.15); /* Blue glow */
+    --hover-glow-strong: rgba(88, 166, 255, 0.25);
+    --accent-glow: rgba(139, 148, 158, 0.1); /* Gray accent glow */
+  }
+}
+
+@layer components {
+  .stat-card-gradient {
+    @apply bg-gradient-to-br from-primary/10 via-primary/5 to-transparent;
+  }
+  
+  /* Highlight card with accent gradient */
+  .accent-card-gradient {
+    @apply bg-gradient-to-br from-accent/10 via-accent/5 to-transparent;
+  }
+
+  /* Professional badge gradients */
+  .badge-success {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500 text-white;
+  }
+  
+  .badge-warning {
+    @apply bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-950;
+  }
+  
+  .badge-danger {
+    @apply bg-gradient-to-r from-rose-500 to-red-500 text-white;
+  }
+  
+  .badge-info {
+    @apply bg-gradient-to-r from-sky-400 to-blue-500 text-white;
+  }
+  
+  /* Animated progress indicator */
+  .progress-bar {
+    @apply relative h-2 w-full overflow-hidden rounded-full bg-muted;
+  }
+  
+  .progress-bar-fill {
+    @apply absolute left-0 top-0 h-full rounded-full bg-primary transition-all;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+    /* Removed margin and padding from body */
+  }
+  
+  h1 {
+    @apply text-4xl font-bold tracking-tight text-foreground/90;
+    margin-bottom: var(--spacing-xs); /* Reduced margin */
+  }
+  
+  h2 {
+    @apply text-3xl font-semibold tracking-tight text-foreground/90;
+    margin-bottom: var(--spacing-xs); /* Reduced margin */
+  }
+  
+  h3 {
+    @apply text-2xl font-semibold tracking-tight text-foreground/90;
+    margin-bottom: var(--spacing-xs); /* Reduced margin */
+  }
+  
+  h4 {
+    @apply text-xl font-semibold tracking-tight text-foreground/90;
+    margin-bottom: var(--spacing-xs); /* Reduced margin */
+  }
+
+  p {
+    margin-bottom: var(--spacing-sm); /* Reduced margin */
+  }
+}
+
+/* ===== ENHANCED COMPONENTS ===== */
+
+/* Enhanced glass effect for cards */
+.glass-card {
+  @apply relative rounded-xl border bg-card/90 backdrop-blur-lg transition-all;
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.03),
+    0 1px 3px rgba(0,0,0,0.02),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+.dark .glass-card {
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.15),
+    0 1px 3px rgba(0,0,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Hoverable glass card */
+.glass-card-hover {
+  @apply glass-card transition-all duration-200;
+}
+
+.glass-card-hover:hover {
+  @apply border-primary/20 bg-card/95;
+  box-shadow: 
+    0 12px 24px rgba(0,0,0,0.05),
+    0 4px 8px rgba(0,0,0,0.03),
+    0 0 0 1px rgba(var(--primary-rgb), 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+}
+
+.dark .glass-card-hover:hover {
+  box-shadow: 
+    0 12px 24px rgba(0,0,0,0.2),
+    0 4px 8px rgba(0,0,0,0.15),
+    0 0 0 1px rgba(var(--primary-rgb), 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Grid background with medical theme */
+.grid-bg {
+  background-image: 
+    radial-gradient(circle at 25px 25px, hsla(var(--primary), 0.15) 2px, transparent 0),
+    linear-gradient(hsla(var(--primary), 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, hsla(var(--primary), 0.05) 1px, transparent 1px);
+  background-size: 50px 50px, 25px 25px, 25px 25px;
+  background-position: 0 0;
+}
+
+.dark .grid-bg {
+  background-image: 
+    radial-gradient(circle at 25px 25px, hsla(var(--primary), 0.2) 2px, transparent 0),
+    linear-gradient(hsla(var(--primary), 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, hsla(var(--primary), 0.07) 1px, transparent 1px);
+}
+
+/* Button hover effect */
+.btn-glow {
+  @apply relative overflow-hidden transition-all duration-200;
+}
+
+.btn-glow:hover {
+  @apply translate-y-[-1px];
+  box-shadow: 0 4px 12px var(--hover-glow);
+}
+
+.btn-glow:before {
+  content: '';
+  @apply absolute inset-0 opacity-0 rounded-md transition-opacity duration-300;
+  background: radial-gradient(circle at var(--x, center) var(--y, center), var(--hover-glow-strong) 0%, transparent 60%);
+}
+
+.btn-glow:hover:before {
+  @apply opacity-100;
+}
+
+.btn-accent-glow:hover {
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.btn-accent-glow:before {
+  background: radial-gradient(circle at var(--x, center) var(--y, center), var(--accent-glow) 0%, transparent 60%);
+}
+
+/* Navigation item effects */
+.nav-item {
+  @apply relative transition-all duration-200;
+}
+
+.nav-item:before {
+  content: '';
+  @apply absolute left-0 top-0 h-full w-0 rounded-md bg-primary/10 transition-all duration-300;
+}
+
+.nav-item:hover:before {
+  @apply w-full;
+}
+
+.nav-item-active:before {
+  @apply w-full bg-primary/20;
+}
+
+/* Dashboard card styles */
+.dashboard-card {
+  @apply glass-card p-6;
+}
+
+.dashboard-card-header {
+  @apply mb-4 flex items-center justify-between;
+}
+
+.dashboard-card-title {
+  @apply text-lg font-medium text-foreground/90;
+}
+
+/* Pulse effect for alerts and notifications */
+.pulse-dot {
+  @apply relative;
+}
+
+.pulse-dot:after {
+  content: '';
+  @apply absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-500;
+  animation: pulse-animation 1.5s infinite;
+}
+
+@keyframes pulse-animation {
+  0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+  100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+/* Scroll fade for tables and long content */
+.scroll-fade-right {
+  mask-image: linear-gradient(to right, black 95%, transparent 100%);
+}
+
+.scroll-fade-bottom {
+  mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
+}
+
+/* Data visualization enhancements */
+.chart-container {
+  @apply rounded-xl p-1;
+  filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.05));
+}
+
+.dark .chart-container {
+  filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Enhanced table styles */
+.enhanced-table {
+  @apply w-full text-sm;
+}
+
+.enhanced-table thead tr {
+  @apply border-b border-border/50 bg-muted/30;
+}
+
+.enhanced-table thead th {
+  @apply p-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+}
+
+.enhanced-table tbody tr {
+  @apply border-b border-border/30 transition-colors duration-150;
+}
+
+.enhanced-table tbody tr:last-child {
+  @apply border-b-0;
+}
+
+.enhanced-table tbody tr:hover {
+  @apply bg-muted/40;
+}
+
+.enhanced-table tbody td {
+  @apply p-4;
+}
+
+/* Improve form elements */
+.enhanced-input {
+  @apply w-full rounded-md border border-input bg-background px-4 py-2 text-sm ring-offset-background transition-shadow focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+}
+
+/* Improved scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-border/70 transition-colors;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/30;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-border/50;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/20;
+}
+
+/* Status indicators */
+.status-indicator {
+  @apply relative flex h-2 w-2 items-center justify-center;
+}
+
+.status-indicator:before {
+  content: '';
+  @apply absolute h-full w-full rounded-full;
+}
+
+.status-indicator-success:before {
+  @apply bg-emerald-500;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.status-indicator-warning:before {
+  @apply bg-amber-500;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.status-indicator-error:before {
+  @apply bg-rose-500;
+  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.2);
+}
+
+.status-indicator-neutral:before {
+  @apply bg-slate-400;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+}
+
+/* Maintain essential animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
