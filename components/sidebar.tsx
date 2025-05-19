@@ -163,11 +163,6 @@ const menuStructure: MenuCategory[] = [
         label: 'Prescriptions',
         path: '/prescriptions',
         icon: FileText
-      },
-      {
-        label: 'Medical Logs',
-        path: '/dashboard/medical-logs',
-        icon: ClipboardList
       }
     ]
   },
@@ -203,11 +198,6 @@ const menuStructure: MenuCategory[] = [
         label: 'Employees',
         path: '/employees',
         icon: UserPlus
-      },
-      {
-        label: 'Departments',
-        path: '/employees?view=departments',
-        icon: Building2
       }
     ]
   },

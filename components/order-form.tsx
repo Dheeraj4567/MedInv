@@ -1,24 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -26,19 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// Define form schema with validation
-const formSchema = z.object({
-  patient_id: z.string().min(1, "Patient is required"),
-  medicine_id: z.string().min(1, "Medicine is required"),
-  quantity: z.string().min(1, "Quantity is required").transform(val => parseInt(val)),
-});
-
+// Interfaces
 interface Patient {
   patient_id: number;
   name: string;
@@ -46,235 +31,313 @@ interface Patient {
 
 interface Medicine {
   medicine_id: number;
-  medicine_name: string;
-  in_stock: number; // Available quantity
+  name: string; // Using name instead of medicine_name to be consistent
+  quantity?: number; // Available quantity
+  price?: number; // Price per unit
 }
 
 interface Order {
   order_id: number;
   patient_id: number;
-  patient_name: string;
-  medicine_name: string;
+  patient_name?: string;
   medicine_id: number;
+  medicine_name?: string;
   quantity?: number;
   order_date: string;
-  log_date: string;
 }
 
 interface OrderFormProps {
   order: Order | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 export function OrderForm({ order, isOpen, onOpenChange, onSuccess }: OrderFormProps) {
+  // Form state
   const [patients, setPatients] = useState<Patient[]>([]);
   const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [selectedPatient, setSelectedPatient] = useState<string>('');
+  const [selectedMedicine, setSelectedMedicine] = useState<string>('');
+  const [quantity, setQuantity] = useState<string>('1');
+  
+  // UI state
+  const [isLoadingData, setIsLoadingData] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  // Configure form with default values and validation
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      patient_id: order?.patient_id?.toString() || "",
-      medicine_id: order?.medicine_id?.toString() || "",
-      quantity: order?.quantity?.toString() || "1",
-    },
-  });
+  const isEditMode = Boolean(order);
 
-  // Reset form when order changes (edit versus add mode)
+  // Fetch data when form opens
   useEffect(() => {
     if (isOpen) {
-      form.reset({
-        patient_id: order?.patient_id?.toString() || "",
-        medicine_id: order?.medicine_id?.toString() || "",
-        quantity: order?.quantity?.toString() || "1",
-      });
-    }
-  }, [form, isOpen, order]);
-
-  // Fetch patients and medicines when form is opened
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!isOpen) return;
+      fetchFormData();
       
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        // Fetch patients
-        const patientsResponse = await fetch('/api/patients');
-        if (!patientsResponse.ok) throw new Error('Failed to load patients');
-        const patientsData = await patientsResponse.json();
-        setPatients(patientsData);
-
-        // Fetch medicines
-        const medicinesResponse = await fetch('/api/medicines');
-        if (!medicinesResponse.ok) throw new Error('Failed to load medicines');
-        const medicinesData = await medicinesResponse.json();
-        setMedicines(medicinesData);
-      } catch (err) {
-        console.error("Error loading form data:", err);
-        setError(err instanceof Error ? err.message : 'Failed to load required data');
-      } finally {
-        setIsLoading(false);
+      // Reset form when opening
+      if (isEditMode && order) {
+        setSelectedPatient(order.patient_id?.toString() || '');
+        setSelectedMedicine(order.medicine_id?.toString() || '');
+        setQuantity(order.quantity?.toString() || '1');
+      } else {
+        setSelectedPatient('');
+        setSelectedMedicine('');
+        setQuantity('1');
       }
-    };
+      
+      setError(null);
+    }
+  }, [isOpen, isEditMode, order]);
 
-    fetchData();
-  }, [isOpen]);
-
-  // Handle form submission
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Fetch patients and medicines
+  const fetchFormData = async () => {
+    setIsLoadingData(true);
     setError(null);
-    setIsSubmitting(true);
     
     try {
-      const apiUrl = '/api/orders' + (order ? `?id=${order.order_id}` : '');
-      const method = order ? 'PUT' : 'POST';
-      
-      const response = await fetch(apiUrl, {
-        method,
-        headers: {
+      // Fetch patients
+      const patientsResponse = await fetch('/api/patients');
+      if (!patientsResponse.ok) throw new Error('Failed to load patients');
+      const patientsData = await patientsResponse.json();
+      setPatients(patientsData);
+
+      // Fetch medicines
+      const medicinesResponse = await fetch('/api/medicines');
+      if (!medicinesResponse.ok) throw new Error('Failed to load medicines');
+      const medicinesData = await medicinesResponse.json();
+      setMedicines(medicinesData);
+    } catch (err) {
+      console.error("Error loading form data:", err);
+      setError(err instanceof Error ? err.message : 'Failed to load required data');
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
+
+    // Validation
+    if (!selectedPatient || !selectedMedicine || !quantity) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    
+    const quantityNum = parseInt(quantity);
+    if (isNaN(quantityNum) || quantityNum < 1) {
+      setError("Quantity must be a valid number greater than 0.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Find the selected medicine to get its price
+    const selectedMed = medicines.find(med => med.medicine_id === parseInt(selectedMedicine));
+    // Use a default price if not found
+    const pricePerUnit = selectedMed?.price || 100;
+
+    // Prepare payload in the correct format for the API
+    const payload = {
+      patient_id: parseInt(selectedPatient),
+      status: "Pending",
+      updateInventory: true,
+      items: [
+        {
+          medicine_id: parseInt(selectedMedicine),
+          quantity: quantityNum,
+          price_per_unit: pricePerUnit
+        }
+      ]
+    };
+    
+    const url = isEditMode ? `/api/orders?id=${order?.order_id}` : '/api/orders';
+    const method = isEditMode ? 'PUT' : 'POST';
+
+    try {
+      // Submit form data
+      const response = await fetch(url, {
+        method: method,
+        headers: { 
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload)
       });
-      
+
+      // Handle API response
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to ${order ? 'update' : 'create'} order`);
+        throw new Error(errorData.error || errorData.details || `Failed to ${isEditMode ? 'update' : 'add'} order`);
       }
+
+      // Success
+      toast({ 
+        title: "Success", 
+        description: `Order ${isEditMode ? 'updated' : 'added'} successfully.` 
+      });
       
-      onSuccess();
+      onOpenChange(false);
+      if (onSuccess) onSuccess();
+
     } catch (err) {
-      console.error(`Error ${order ? 'updating' : 'creating'} order:`, err);
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      const message = err instanceof Error ? err.message : `Failed to ${isEditMode ? 'update' : 'add'} order`;
+      setError(message);
+      toast({ 
+        title: "Error", 
+        description: message, 
+        variant: "destructive" 
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Handle dialog open/close
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      // Reset form when closing
+      setError(null);
+    }
+    onOpenChange(open);
+  };
+
+  // Only render if open
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{order ? 'Edit' : 'Add'} Order</DialogTitle>
-        </DialogHeader>
-        
-        {error && (
-          <Alert variant="destructive" className="mt-2">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
-            <FormField
-              control={form.control}
-              name="patient_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Patient</FormLabel>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden">
+        <div style={{ zIndex: 1000 }} className="p-6 bg-background">
+          <DialogHeader className="mb-4">
+            <DialogTitle>
+              {isEditMode 
+                ? `Edit Order #${order?.order_id}` 
+                : 'Add New Order'}
+            </DialogTitle>
+            <DialogDescription>
+              {isEditMode 
+                ? "Update the order details." 
+                : "Enter the details for the new order."}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {isLoadingData ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Patient */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="order-patient" className="text-right">
+                  Patient
+                </Label>
+                <div className="col-span-3">
                   <Select 
-                    disabled={isLoading} 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
+                    value={selectedPatient} 
+                    onValueChange={setSelectedPatient}
                   >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select patient" />
-                      </SelectTrigger>
-                    </FormControl>
+                    <SelectTrigger id="order-patient">
+                      <SelectValue placeholder="Select Patient" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {patients.map((patient) => (
-                        <SelectItem 
-                          key={patient.patient_id} 
-                          value={patient.patient_id.toString()}
-                        >
-                          {patient.name}
+                      {patients.length > 0 ? (
+                        patients.map((patient) => (
+                          <SelectItem 
+                            key={patient.patient_id} 
+                            value={String(patient.patient_id)}
+                          >
+                            {patient.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="" disabled>
+                          No patients available
                         </SelectItem>
-                      ))}
+                      )}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="medicine_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Medicine</FormLabel>
+                </div>
+              </div>
+              
+              {/* Medicine */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="order-medicine" className="text-right">
+                  Medicine
+                </Label>
+                <div className="col-span-3">
                   <Select 
-                    disabled={isLoading} 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
+                    value={selectedMedicine} 
+                    onValueChange={setSelectedMedicine}
                   >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select medicine" />
-                      </SelectTrigger>
-                    </FormControl>
+                    <SelectTrigger id="order-medicine">
+                      <SelectValue placeholder="Select Medicine" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {medicines.map((medicine) => (
-                        <SelectItem 
-                          key={medicine.medicine_id} 
-                          value={medicine.medicine_id.toString()}
-                        >
-                          {medicine.medicine_name} ({medicine.in_stock} in stock)
+                      {medicines.length > 0 ? (
+                        medicines.map((medicine) => (
+                          <SelectItem 
+                            key={medicine.medicine_id} 
+                            value={String(medicine.medicine_id)}
+                          >
+                            {medicine.name || medicine.medicine_name} {medicine.quantity !== undefined && `(${medicine.quantity} in stock)`}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="" disabled>
+                          No medicines available
                         </SelectItem>
-                      ))}
+                      )}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
+                </div>
+              </div>
+              
+              {/* Quantity */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="order-quantity" className="text-right">
+                  Quantity
+                </Label>
+                <div className="col-span-3">
+                  <Input
+                    id="order-quantity"
+                    type="number"
+                    min="1"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </div>
+              </div>
+              
+              {/* Error message */}
+              {error && (
+                <div className="p-3 rounded bg-destructive/10 text-destructive flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="text-sm">{error}</span>
+                </div>
               )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="1"
-                      placeholder="Quantity"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting || isLoading}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {order ? 'Update' : 'Add'} Order
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              
+              <DialogFooter className="flex justify-end space-x-2 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => handleOpenChange(false)}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting || isLoadingData}
+                >
+                  {isSubmitting ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Add Order')}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

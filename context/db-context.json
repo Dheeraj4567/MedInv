@@ -1,1 +1,0 @@
-{"StaffAccount":{"columns":[{"name":"username","type":"VARCHAR"},{"name":"employee_id","type":"INT"},{"name":"employee_name","type":"VARCHAR"},{"name":"role","type":"VARCHAR"}]}}

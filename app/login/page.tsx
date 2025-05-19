@@ -64,26 +64,22 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row">
-      {/* Left side - Medical themed gradient background with logo */}
+      {/* Left side - Only logo and MedInv text */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 via-blue-400 to-cyan-300 flex-col justify-center items-center p-12 relative overflow-hidden"
+        className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 via-blue-400 to-cyan-300 flex-col justify-center items-center p-12 relative"
       >
-        <div className="absolute inset-0 bg-[url('/placeholder.svg')] opacity-10 bg-repeat-space"></div>
         <div className="z-10 text-center">
           <Image 
-            src="/image.png" // Updated path to the logo in the public directory
-            alt="MedInv Logo" // Changed from MediTrack to MedInv
+            src="/image.png"
+            alt="MedInv Logo"
             width={180} 
             height={180} 
             className="mx-auto mb-8"
           />
-          <h1 className="text-4xl font-extrabold text-white mb-6">MedInv</h1> // Changed from MediTrack to MedInv
-          <p className="text-xl text-white/90 max-w-md mx-auto">
-            Comprehensive medical inventory management system for modern healthcare facilities
-          </p>
+          <h1 className="text-4xl font-extrabold text-white">MedInv</h1>
         </div>
       </motion.div>
 

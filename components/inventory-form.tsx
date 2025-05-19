@@ -222,7 +222,7 @@ export function InventoryForm({ item, isOpen, onOpenChange, onSuccess }: Invento
                     <SelectTrigger id="inv-medicine">
                       <SelectValue placeholder="Select Medicine" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[1001]">
                       {medicines.length > 0 ? (
                         medicines.map((med) => (
                           <SelectItem 
@@ -255,7 +255,7 @@ export function InventoryForm({ item, isOpen, onOpenChange, onSuccess }: Invento
                     <SelectTrigger id="inv-supplier">
                       <SelectValue placeholder="Select Supplier" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[1001]">
                       {suppliers.length > 0 ? (
                         suppliers.map((sup) => (
                           <SelectItem 

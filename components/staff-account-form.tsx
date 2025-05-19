@@ -33,8 +33,8 @@ interface Employee {
 interface StaffAccountInfo {
   username: string;
   employee_id: number | null;
-  employee_name?: string | null;
-  role?: string | null;
+  employee_name: string | null;
+  role: string | null;
 }
 
 interface StaffAccountFormInputs {
@@ -42,6 +42,7 @@ interface StaffAccountFormInputs {
   password?: string;
   confirmPassword?: string;
   employee_id: string;
+  role: string;
 }
 
 interface StaffAccountFormProps {
@@ -58,7 +59,7 @@ export function StaffAccountForm({ account, isOpen, onOpenChange, onSuccess }: S
   const [apiError, setApiError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const isEditMode = Boolean(account);
+  const isEditMode = Boolean(account?.username);
   const passwordValue = watch("password");
 
   // Fetch employees for dropdown when dialog opens
@@ -95,10 +96,17 @@ export function StaffAccountForm({ account, isOpen, onOpenChange, onSuccess }: S
       if (isEditMode && account) {
         setValue("username", account.username || '');
         setValue("employee_id", account.employee_id ? String(account.employee_id) : '');
+        setValue("role", account.role || 'staff');
         setValue("password", "");
         setValue("confirmPassword", "");
       } else {
-        reset({ username: '', password: '', confirmPassword: '', employee_id: '' });
+        reset({ 
+          username: '', 
+          password: '', 
+          confirmPassword: '', 
+          employee_id: '',
+          role: 'staff'
+        });
       }
       setApiError(null);
     }
@@ -278,8 +286,8 @@ export function StaffAccountForm({ account, isOpen, onOpenChange, onSuccess }: S
                     <SelectTrigger id="acc-employee">
                       <SelectValue placeholder="Select Employee" />
                     </SelectTrigger>
-                    <SelectContent>
-                      {employees.length > 0 ? 
+                    <SelectContent className="z-[1001]">
+                      {employees && employees.length > 0 ? 
                         employees.map((emp) => (
                           <SelectItem key={emp.employee_id} value={String(emp.employee_id)}>
                             {emp.name} ({emp.position})

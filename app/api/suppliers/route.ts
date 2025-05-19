@@ -42,8 +42,20 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error('Error creating supplier:', error);
+    // Handle specific SQL errors
+    let errorMessage = 'Failed to create supplier';
+    if (error instanceof Error) {
+      if ('code' in error && (error as any).code === 'ER_NO_DEFAULT_FOR_FIELD') {
+        errorMessage = 'Database error: supplier_id field needs AUTO_INCREMENT. Please update your database schema.';
+      } else if ('code' in error && (error as any).code === 'ER_DUP_ENTRY') {
+        errorMessage = 'A supplier with this name already exists.';
+      }
+    }
     return NextResponse.json(
-      { error: 'Failed to create supplier' },
+      { 
+        error: errorMessage,
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }

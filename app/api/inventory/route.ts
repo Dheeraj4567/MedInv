@@ -67,6 +67,7 @@ export async function GET() {
 
      // TODO: Add checks to ensure medicine_id and supplier_id exist in their respective tables
 
+     // Modified query to use AUTO_INCREMENT for inventory_number
      const query = `
        INSERT INTO Inventory (medicine_id, supplier_id, quantity)
        VALUES (?, ?, ?)
@@ -82,11 +83,14 @@ export async function GET() {
 
    } catch (error) {
      console.error('Error adding inventory item:', error);
-     // Handle potential foreign key constraint errors etc.
+     // Handle specific SQL errors
      let errorMessage = 'Failed to add inventory item';
-     if (error instanceof Error && 'code' in error) {
-       if ((error as any).code === 'ER_NO_REFERENCED_ROW_2') {
-          errorMessage = 'Invalid Medicine ID or Supplier ID provided.';
+     if (error instanceof Error) {
+       // Check for 'ER_NO_DEFAULT_FOR_FIELD' error (auto-increment not set up)
+       if ('code' in error && (error as any).code === 'ER_NO_DEFAULT_FOR_FIELD') {
+         errorMessage = 'Database error: inventory_number field needs to be set to AUTO_INCREMENT. Please contact your administrator.';
+       } else if ('code' in error && (error as any).code === 'ER_NO_REFERENCED_ROW_2') {
+         errorMessage = 'Invalid Medicine ID or Supplier ID provided.';
        }
      }
      return NextResponse.json(

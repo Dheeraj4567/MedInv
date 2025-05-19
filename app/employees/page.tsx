@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search } from "lucide-react";
 import React, { useEffect, useState } from 'react'; // Import React hooks
+import { AppLayout } from "@/components/app-layout"; // Import AppLayout
 
 // Define interface based on API response
 interface EmployeeInfo {
@@ -66,64 +67,66 @@ const EmployeesPage = () => { // Changed to arrow function
     return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-700 border border-gray-200";
   };
 
-
+  // Wrap the content with AppLayout
   return (
-    <DashboardShell>
-      <DashboardHeader heading="Employees" text="View and manage employee records.">
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Employee
-        </Button>
-      </DashboardHeader>
-      <Card className="backdrop-blur-sm bg-card/50">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input type="search" placeholder="Search employees..." className="pl-8 bg-background" />
+    <AppLayout>
+      <DashboardShell>
+        <DashboardHeader heading="Employees" text="View and manage employee records.">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Employee
+          </Button>
+        </DashboardHeader>
+        <Card className="backdrop-blur-sm bg-card/50">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input type="search" placeholder="Search employees..." className="pl-8 bg-background" />
+              </div>
+              <Button variant="outline">Filter</Button>
+              <Button variant="outline">Export</Button>
             </div>
-            <Button variant="outline">Filter</Button>
-            <Button variant="outline">Export</Button>
-          </div>
-          {error && <p className="text-red-500 mb-4">Error: {error}</p>}
-          {employees === null && <p>Loading employees...</p>}
-          {employees !== null && employees.length === 0 && !error && <p>No employees found.</p>}
-          {employees !== null && employees.length > 0 && (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Employee ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow key={employee.employee_id}>
-                    <TableCell className="font-medium">{employee.employee_id}</TableCell>
-                    <TableCell>{employee.name}</TableCell>
-                    <TableCell>{employee.position || 'N/A'}</TableCell>
-                    <TableCell>{employee.department || 'N/A'}</TableCell>
-                    <TableCell>{employee.contact || 'N/A'}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={`text-xs px-1.5 py-0.5 ${getStatusColor(employee.status || 'Unknown')}`}
-                      >
-                        {employee.status || 'Unknown'}
-                      </Badge>
-                    </TableCell>
+            {error && <p className="text-red-500 mb-4">Error: {error}</p>}
+            {employees === null && <p>Loading employees...</p>}
+            {employees !== null && employees.length === 0 && !error && <p>No employees found.</p>}
+            {employees !== null && employees.length > 0 && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">Employee ID</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Position</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-    </DashboardShell>
+                </TableHeader>
+                <TableBody>
+                  {employees.map((employee) => (
+                    <TableRow key={employee.employee_id}>
+                      <TableCell className="font-medium">{employee.employee_id}</TableCell>
+                      <TableCell>{employee.name}</TableCell>
+                      <TableCell>{employee.position || 'N/A'}</TableCell>
+                      <TableCell>{employee.department || 'N/A'}</TableCell>
+                      <TableCell>{employee.contact || 'N/A'}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={`text-xs px-1.5 py-0.5 ${getStatusColor(employee.status || 'Unknown')}`}
+                        >
+                          {employee.status || 'Unknown'}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </DashboardShell>
+    </AppLayout>
   )
 }
 

@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import React, { useEffect, useState } from 'react'; // Import React hooks
+import { AppLayout } from "@/components/app-layout"; // Import AppLayout component
 
 // Define interface based on API response
 interface FeedbackInfo {
@@ -75,62 +76,64 @@ const FeedbackPage = () => { // Changed to arrow function
   };
 
   return (
-    <DashboardShell>
-      <DashboardHeader heading="Feedback" text="View and manage patient feedback.">
-        <Button variant="outline">Generate Report</Button>
-      </DashboardHeader>
-      <Card className="backdrop-blur-sm bg-card/50">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input type="search" placeholder="Search feedback..." className="pl-8 bg-background" />
+    <AppLayout>
+      <DashboardShell>
+        <DashboardHeader heading="Feedback" text="View and manage patient feedback.">
+          <Button variant="outline">Generate Report</Button>
+        </DashboardHeader>
+        <Card className="backdrop-blur-sm bg-card/50">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input type="search" placeholder="Search feedback..." className="pl-8 bg-background" />
+              </div>
+              <Button variant="outline">Filter</Button>
+              <Button variant="outline">Export</Button>
             </div>
-            <Button variant="outline">Filter</Button>
-            <Button variant="outline">Export</Button>
-          </div>
-          {error && <p className="text-red-500 mb-4">Error: {error}</p>}
-          {feedbacks === null && <p>Loading feedback...</p>}
-          {feedbacks !== null && feedbacks.length === 0 && !error && <p>No feedback found.</p>}
-          {feedbacks !== null && feedbacks.length > 0 && (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Feedback ID</TableHead>
-                  <TableHead>Patient Name</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Rating</TableHead>
-                  <TableHead className="w-[300px]">Comment</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {feedbacks.map((feedback) => (
-                  <TableRow key={feedback.feedback_id}>
-                    <TableCell className="font-medium">{feedback.feedback_id}</TableCell>
-                    <TableCell>{feedback.patient_name}</TableCell>
-                    <TableCell>{feedback.date}</TableCell> {/* Placeholder */}
-                    <TableCell>
-                      <Badge variant="outline" className={`text-xs px-1.5 py-0.5 ${getRatingColor(feedback.ratings)}`}>
-                        {feedback.ratings !== null ? `${feedback.ratings}/5` : 'N/A'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="max-w-[300px] truncate" title={feedback.comment}>
-                      {feedback.comment} {/* Placeholder */}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={`text-xs px-1.5 py-0.5 ${getStatusColor(feedback.status || 'Unknown')}`}>
-                        {feedback.status || 'Unknown'}
-                      </Badge>
-                    </TableCell>
+            {error && <p className="text-red-500 mb-4">Error: {error}</p>}
+            {feedbacks === null && <p>Loading feedback...</p>}
+            {feedbacks !== null && feedbacks.length === 0 && !error && <p>No feedback found.</p>}
+            {feedbacks !== null && feedbacks.length > 0 && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">Feedback ID</TableHead>
+                    <TableHead>Patient Name</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Rating</TableHead>
+                    <TableHead className="w-[300px]">Comment</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-    </DashboardShell>
+                </TableHeader>
+                <TableBody>
+                  {feedbacks.map((feedback) => (
+                    <TableRow key={feedback.feedback_id}>
+                      <TableCell className="font-medium">{feedback.feedback_id}</TableCell>
+                      <TableCell>{feedback.patient_name}</TableCell>
+                      <TableCell>{feedback.date}</TableCell> {/* Placeholder */}
+                      <TableCell>
+                        <Badge variant="outline" className={`text-xs px-1.5 py-0.5 ${getRatingColor(feedback.ratings)}`}>
+                          {feedback.ratings !== null ? `${feedback.ratings}/5` : 'N/A'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="max-w-[300px] truncate" title={feedback.comment}>
+                        {feedback.comment} {/* Placeholder */}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={`text-xs px-1.5 py-0.5 ${getStatusColor(feedback.status || 'Unknown')}`}>
+                          {feedback.status || 'Unknown'}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </DashboardShell>
+    </AppLayout>
   )
 }
 

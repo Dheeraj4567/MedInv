@@ -3,6 +3,7 @@
 import { useContext } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { DeploymentModeIndicator } from "./deployment-mode-indicator";
 
 interface DashboardHeaderProps {
   heading: string;
@@ -36,7 +37,8 @@ export function DashboardHeader({
           )}
         </div>
       )}
-      <div className={cn(!showHeading && "ml-auto")}>
+      <div className={cn("flex items-center gap-4", !showHeading && "ml-auto")}>
+        <DeploymentModeIndicator />
         {children}
       </div>
     </div>

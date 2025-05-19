@@ -50,7 +50,7 @@ export async function GET() {
       },
       {
         title: "Average Value",
-        value: averageValue?.average ? `$${Math.round(averageValue.average)}` : "$0",
+        value: averageValue?.average ? `₹${Math.round(averageValue.average)}` : "₹0",
         change: "+1.51%",
         trend: "up"
       },

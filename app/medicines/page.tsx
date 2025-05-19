@@ -199,7 +199,11 @@ export default function MedicinesPage() {
                         <TableCell className="font-medium">{med.medicine_id}</TableCell>
                         <TableCell>{med.name}</TableCell>
                         <TableCell>{med.manufacturer}</TableCell>
-                        <TableCell>${typeof med.price === 'number' ? med.price.toFixed(2) : 'N/A'}</TableCell>
+                        <TableCell>
+                          {med.price !== null && med.price !== undefined 
+                            ? `₹${Number(med.price).toFixed(2)}` 
+                            : 'N/A'}
+                        </TableCell>
                         <TableCell>{formatDate(med.expiry_date)}</TableCell>
                         <TableCell className="space-x-1">
                           <Button

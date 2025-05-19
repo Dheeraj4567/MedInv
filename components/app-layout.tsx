@@ -16,6 +16,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const pathname = usePathname();
 
   // Load sidebar state from localStorage on mount
@@ -25,10 +26,15 @@ export function AppLayout({ children }: AppLayoutProps) {
       if (savedState !== null) {
         setIsSidebarCollapsed(JSON.parse(savedState));
       }
+      
+      // Always ensure sidebar is visible on mount (except login)
+      if (pathname !== "/login") {
+        setIsSidebarVisible(true);
+      }
     } catch (error) {
       console.error('Error loading sidebar state:', error);
     }
-  }, []);
+  }, [pathname]);
 
   // Save sidebar state to localStorage
   useEffect(() => {
@@ -42,7 +48,13 @@ export function AppLayout({ children }: AppLayoutProps) {
   // Simulate loading for better UX
   useEffect(() => {
     // Fast loading for subsequent navigation
-    const timer = setTimeout(() => setIsLoading(false), pathname === "/login" ? 100 : 300);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      // Ensure sidebar is visible after page load (except login)
+      if (pathname !== "/login") {
+        setIsSidebarVisible(true);
+      }
+    }, pathname === "/login" ? 100 : 300);
     return () => clearTimeout(timer);
   }, [pathname]);
 
@@ -64,12 +76,12 @@ export function AppLayout({ children }: AppLayoutProps) {
           <PageLoader />
         ) : (
           <div className="flex h-screen overflow-hidden">
-            {/* Sidebar - always render with fixed positioning */}
-            {shouldRenderSidebar && (
+            {/* Sidebar - always render with fixed positioning and higher z-index */}
+            {shouldRenderSidebar && isSidebarVisible && (
               <Sidebar 
                 collapsed={isSidebarCollapsed}
                 toggleCollapsed={toggleSidebar}
-                className="fixed left-0 top-0 h-screen z-30"
+                className="fixed left-0 top-0 h-screen z-50"
                 onExpandChange={handleSidebarExpandChange}
               />
             )}
@@ -78,8 +90,9 @@ export function AppLayout({ children }: AppLayoutProps) {
             <main 
               className={cn(
                 "flex-1 overflow-y-auto h-screen transition-all duration-300 ease-in-out",
-                shouldRenderSidebar && !isSidebarCollapsed && "ml-[260px]",
-                shouldRenderSidebar && isSidebarCollapsed && "ml-[70px]",
+                shouldRenderSidebar && !isSidebarCollapsed && isSidebarVisible && "ml-[260px]",
+                shouldRenderSidebar && isSidebarCollapsed && isSidebarVisible && "ml-[70px]",
+                (!isSidebarVisible || !shouldRenderSidebar) && "ml-0",
                 "pt-2 pb-10 px-6" // Reduced top padding to bring the table closer to the heading
               )}
             >

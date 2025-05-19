@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
-  Card, CardContent
+  Card, CardContent, CardFooter
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,7 +18,9 @@ import {
   Receipt, Database, FileBarChart2, Filter, Search,
   ChevronRight, LayoutGrid, ClipboardList, BarChart3,
   Building2, CheckCircle2, FileSearch, Truck, UserPlus, X,
-  Download, RotateCw, Upload, Activity, BadgeAlert, MessageSquare
+  Download, RotateCw, Upload, Activity, BadgeAlert, MessageSquare,
+  Plus, Calendar, ArrowRightLeft, Tag, FileEdit, UserCircle,
+  CreditCard, CircleDollarSign, FileCheck
 } from 'lucide-react';
 
 // Category interface
@@ -55,6 +57,7 @@ interface DatabaseOperation {
   badge?: string;
   badgeColor?: 'default' | 'destructive' | 'success' | 'warning' | 'info' | 'outline';
   disabled?: boolean;
+  featured?: boolean;
 }
 
 // Define database categories
@@ -132,15 +135,14 @@ const databaseTables: DatabaseTable[] = [
   
   { name: "Employee", count: 124, lastUpdated: "1d ago", category: 'operations', icon: UserPlus, color: 'text-rose-600' },
   { name: "StaffAccount", count: 73, lastUpdated: "5h ago", category: 'operations', icon: Users, color: 'text-rose-600' },
-  { name: "MedicalLogs", count: 673, lastUpdated: "15m ago", category: 'operations', icon: ClipboardList, color: 'text-rose-600' },
   
   { name: "ActivityLog", count: 145, lastUpdated: "10m ago", category: 'system', icon: Activity, color: 'text-slate-600' },
   { name: "ExpiryAlert", count: 27, lastUpdated: "10m ago", category: 'system', icon: BadgeAlert, color: 'text-slate-600' },
   { name: "Feedback", count: 89, lastUpdated: "4h ago", category: 'system', icon: MessageSquare, color: 'text-slate-600' },
 ];
 
-// Common database operations
-const commonOperations: DatabaseOperation[] = [
+// Enhanced create operations with more options
+const createOperations: DatabaseOperation[] = [
   {
     id: 'add-medicine',
     title: 'Add Medicine',
@@ -149,7 +151,8 @@ const commonOperations: DatabaseOperation[] = [
     path: '/medicines/add',
     color: 'text-blue-600',
     bgColor: 'bg-blue-600/10',
-    category: 'create'
+    category: 'create',
+    featured: true
   },
   {
     id: 'add-inventory',
@@ -159,8 +162,184 @@ const commonOperations: DatabaseOperation[] = [
     path: '/inventory/add',
     color: 'text-blue-600',
     bgColor: 'bg-blue-600/10',
+    category: 'create',
+    featured: true
+  },
+  {
+    id: 'add-category',
+    title: 'Add Drug Category',
+    description: 'Create new medicine category',
+    icon: Tag,
+    path: '/drug-categories/add',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-600/10',
     category: 'create'
   },
+  {
+    id: 'add-order',
+    title: 'New Order',
+    description: 'Create purchase order',
+    icon: ShoppingCart,
+    path: '/orders/add',
+    color: 'text-green-600',
+    bgColor: 'bg-green-600/10',
+    category: 'create',
+    featured: true
+  },
+  {
+    id: 'add-supplier',
+    title: 'Add Supplier',
+    description: 'Register new supplier',
+    icon: Truck,
+    path: '/suppliers/add',
+    color: 'text-green-600',
+    bgColor: 'bg-green-600/10',
+    category: 'create'
+  },
+  {
+    id: 'add-patient',
+    title: 'Add Patient',
+    description: 'Register new patient',
+    icon: UserCircle,
+    path: '/patients/add',
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-600/10',
+    category: 'create',
+    featured: true
+  },
+  {
+    id: 'add-prescription',
+    title: 'New Prescription',
+    description: 'Create patient prescription',
+    icon: FileText,
+    path: '/prescriptions/add',
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-600/10',
+    category: 'create'
+  },
+  {
+    id: 'add-billing',
+    title: 'New Invoice',
+    description: 'Create billing invoice',
+    icon: Receipt,
+    path: '/billing/add',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-600/10',
+    category: 'create',
+    featured: true
+  },
+  {
+    id: 'add-payment',
+    title: 'Record Payment',
+    description: 'Record a payment transaction',
+    icon: CreditCard,
+    path: '/billing/payment/add',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-600/10',
+    category: 'create'
+  },
+  {
+    id: 'add-discount',
+    title: 'Create Discount',
+    description: 'Add new discount rule',
+    icon: CircleDollarSign,
+    path: '/discounts/add',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-600/10',
+    category: 'create'
+  },
+  {
+    id: 'add-staff',
+    title: 'Add Staff Member',
+    description: 'Register new staff account',
+    icon: UserPlus,
+    path: '/staff-accounts/add',
+    color: 'text-rose-600',
+    bgColor: 'bg-rose-600/10',
+    category: 'create'
+  },
+  {
+    id: 'add-department',
+    title: 'Add Department',
+    description: 'Create new department',
+    icon: Building2,
+    path: '/employees?view=add-department',
+    color: 'text-rose-600',
+    bgColor: 'bg-rose-600/10',
+    category: 'create'
+  }
+];
+
+// Read operations
+const readOperations: DatabaseOperation[] = [
+  {
+    id: 'view-medicines',
+    title: 'View Medicines',
+    description: 'Browse medicine catalog',
+    icon: Pill,
+    path: '/medicines',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-600/10',
+    category: 'read'
+  },
+  {
+    id: 'check-inventory',
+    title: 'Check Inventory',
+    description: 'View current stock levels',
+    icon: Package,
+    path: '/inventory',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-600/10',
+    category: 'read'
+  },
+  {
+    id: 'view-orders',
+    title: 'View Orders',
+    description: 'Manage purchase orders',
+    icon: FileCheck,
+    path: '/orders',
+    color: 'text-green-600',
+    bgColor: 'bg-green-600/10',
+    category: 'read'
+  },
+  {
+    id: 'view-patients',
+    title: 'Patient Records',
+    description: 'Access patient database',
+    icon: Users,
+    path: '/patients',
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-600/10',
+    category: 'read'
+  }
+];
+
+// Analytics operations
+const analyticsOperations: DatabaseOperation[] = [
+  {
+    id: 'inventory-analytics',
+    title: 'Inventory Analytics',
+    description: 'Stock level trends and projections',
+    icon: BarChart3,
+    path: '/analytics?view=inventory',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-600/10',
+    category: 'analytics'
+  },
+  {
+    id: 'sales-analytics',
+    title: 'Sales Analytics',
+    description: 'Revenue analysis and forecasts',
+    icon: FileBarChart2,
+    path: '/analytics?view=sales',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-600/10',
+    category: 'analytics'
+  }
+];
+
+// System operations
+const systemOperations: DatabaseOperation[] = [
   {
     id: 'database-explorer',
     title: 'Database Explorer',
@@ -170,9 +349,47 @@ const commonOperations: DatabaseOperation[] = [
     color: 'text-slate-600',
     bgColor: 'bg-slate-600/10',
     category: 'system',
-    badge: 'New',
+    badge: 'Enhanced',
     badgeColor: 'info'
+  },
+  {
+    id: 'export-data',
+    title: 'Export Data',
+    description: 'Export data to CSV/Excel',
+    icon: Download,
+    path: '/database-explorer?view=export',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-600/10',
+    category: 'system'
+  },
+  {
+    id: 'backup-database',
+    title: 'Backup Database',
+    description: 'Create a full database backup',
+    icon: RotateCw,
+    path: '/database-explorer?view=backup',
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-600/10',
+    category: 'system'
+  },
+  {
+    id: 'import-data',
+    title: 'Import Data',
+    description: 'Import data from CSV/Excel',
+    icon: Upload,
+    path: '/database-explorer?view=import',
+    color: 'text-green-600',
+    bgColor: 'bg-green-600/10',
+    category: 'system'
   }
+];
+
+// Combine all operations
+const allOperations = [
+  ...createOperations,
+  ...readOperations,
+  ...analyticsOperations,
+  ...systemOperations
 ];
 
 export function AppHub() {
@@ -181,6 +398,7 @@ export function AppHub() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showingFilter, setShowingFilter] = useState(false);
+  const [activeTab, setActiveTab] = useState<'create' | 'browse' | null>(null);
   
   // Filter tables based on the selected category and search term
   const filteredTables = databaseTables
@@ -188,11 +406,13 @@ export function AppHub() {
     .filter(table => !searchTerm || table.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   // Filter operations based on search term
-  const filteredOperations = commonOperations
+  const filteredOperations = allOperations
     .filter(op => !searchTerm || 
       op.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       op.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+  const featuredCreateOperations = createOperations.filter(op => op.featured);
 
   // Animation variants
   const cardVariants = {
@@ -211,6 +431,7 @@ export function AppHub() {
   // Handle category selection
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(selectedCategory === category ? null : category);
+    setActiveTab(null);
   };
 
   // Navigate to a specific path with enhanced feedback
@@ -265,6 +486,12 @@ export function AppHub() {
     });
   };
 
+  // Set active tab
+  const handleSetActiveTab = (tab: 'create' | 'browse' | null) => {
+    setActiveTab(activeTab === tab ? null : tab);
+    setSelectedCategory(null);
+  };
+
   return (
     <ScrollArea className="h-full w-full overflow-x-auto overflow-y-auto" type="always">
       <div className="p-6 min-w-[800px] bg-background/95 backdrop-blur-sm">
@@ -306,50 +533,155 @@ export function AppHub() {
           </div>
           <p className="text-sm text-muted-foreground">Centralized access to all database operations and tables</p>
         </div>
-        
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          {databaseCategories.map((category, idx) => (
-            <motion.div
-              key={category.name}
-              initial="hidden"
-              animate="visible"
-              variants={cardVariants}
-              custom={idx}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+
+        {/* Quick Add Section */}
+        <div className="mb-8">
+          <div className="flex items-center mb-4">
+            <Button 
+              variant={activeTab === 'create' ? "default" : "outline"}
+              className="mr-2"
+              onClick={() => handleSetActiveTab('create')}
             >
-              <Card 
-                className={cn(
-                  "cursor-pointer overflow-hidden border border-border/30 shadow-sm h-full transition-all",
-                  selectedCategory === category.name ? "ring-2 ring-primary/30" : "hover:border-border/60"
-                )}
-                onClick={() => handleCategoryClick(category.name)}
-                role="button"
-                tabIndex={0}
-                aria-pressed={selectedCategory === category.name}
-                aria-label={`${category.name} category with ${category.tables} tables`}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCategoryClick(category.name);
-                  }
-                }}
-              >
-                <CardContent className="p-5 flex flex-col items-center text-center">
-                  <div className={`p-3 rounded-full ${category.bgColor}`}>
-                    <category.icon className={`h-6 w-6 ${category.color}`} />
-                  </div>
-                  <h3 className="font-semibold mt-3">{category.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">{category.description}</p>
-                  <Badge variant="outline" className="mt-3 text-xs">
-                    {category.tables} tables
-                  </Badge>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+              <Plus className="mr-1 h-4 w-4" /> Create New
+            </Button>
+            <Button 
+              variant={activeTab === 'browse' ? "default" : "outline"}
+              onClick={() => handleSetActiveTab('browse')}
+            >
+              <LayoutGrid className="mr-1 h-4 w-4" /> Browse Categories
+            </Button>
+          </div>
+
+          {activeTab === 'create' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {featuredCreateOperations.map((operation, idx) => (
+                <motion.div
+                  key={operation.id}
+                  initial="hidden"
+                  animate="visible"
+                  variants={cardVariants}
+                  custom={idx}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Card 
+                    className="cursor-pointer bg-background border border-primary/20 shadow-sm hover:border-primary/40 hover:shadow-md transition-all"
+                    onClick={() => operation.path && handleNavigate(operation.path)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={operation.title}
+                  >
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                        <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium">{operation.title}</h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {operation.description}
+                        </p>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="px-4 py-2 border-t border-border/20 flex justify-end">
+                      <Button size="sm" variant="ghost" className="h-8">
+                        <Plus size={14} className="mr-1" /> Add
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
+        
+        {activeTab === 'browse' ? (
+          /* Categories Grid */
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            {databaseCategories.map((category, idx) => (
+              <motion.div
+                key={category.name}
+                initial="hidden"
+                animate="visible"
+                variants={cardVariants}
+                custom={idx}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Card 
+                  className={cn(
+                    "cursor-pointer overflow-hidden border border-border/30 shadow-sm h-full transition-all",
+                    selectedCategory === category.name ? "ring-2 ring-primary/30" : "hover:border-border/60"
+                  )}
+                  onClick={() => handleCategoryClick(category.name)}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selectedCategory === category.name}
+                  aria-label={`${category.name} category with ${category.tables} tables`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleCategoryClick(category.name);
+                    }
+                  }}
+                >
+                  <CardContent className="p-5 flex flex-col items-center text-center">
+                    <div className={`p-3 rounded-full ${category.bgColor}`}>
+                      <category.icon className={`h-6 w-6 ${category.color}`} />
+                    </div>
+                    <h3 className="font-semibold mt-3">{category.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">{category.description}</p>
+                    <Badge variant="outline" className="mt-3 text-xs">
+                      {category.tables} tables
+                    </Badge>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        ) : activeTab === null && !selectedCategory ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            {databaseCategories.map((category, idx) => (
+              <motion.div
+                key={category.name}
+                initial="hidden"
+                animate="visible"
+                variants={cardVariants}
+                custom={idx}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Card 
+                  className={cn(
+                    "cursor-pointer overflow-hidden border border-border/30 shadow-sm h-full transition-all",
+                    selectedCategory === category.name ? "ring-2 ring-primary/30" : "hover:border-border/60"
+                  )}
+                  onClick={() => handleCategoryClick(category.name)}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selectedCategory === category.name}
+                  aria-label={`${category.name} category with ${category.tables} tables`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleCategoryClick(category.name);
+                    }
+                  }}
+                >
+                  <CardContent className="p-5 flex flex-col items-center text-center">
+                    <div className={`p-3 rounded-full ${category.bgColor}`}>
+                      <category.icon className={`h-6 w-6 ${category.color}`} />
+                    </div>
+                    <h3 className="font-semibold mt-3">{category.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">{category.description}</p>
+                    <Badge variant="outline" className="mt-3 text-xs">
+                      {category.tables} tables
+                    </Badge>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        ) : null}
         
         {/* Tables or Operations */}
         {selectedCategory ? (
@@ -439,335 +771,478 @@ export function AppHub() {
                 </div>
               )}
             </div>
+
+            {/* Display relevant create operations for the selected category */}
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-4">Add New {selectedCategory} Item</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {createOperations
+                  .filter(op => {
+                    const categoryLower = selectedCategory.toLowerCase();
+                    if (categoryLower === 'inventory') return op.color.includes('blue');
+                    if (categoryLower === 'orders') return op.color.includes('green');
+                    if (categoryLower === 'patients') return op.color.includes('amber');
+                    if (categoryLower === 'finance') return op.color.includes('purple');
+                    if (categoryLower === 'operations') return op.color.includes('rose');
+                    if (categoryLower === 'system') return op.color.includes('slate');
+                    return false;
+                  })
+                  .map((operation, idx) => (
+                    <motion.div
+                      key={operation.id}
+                      initial="hidden"
+                      animate="visible"
+                      variants={cardVariants}
+                      custom={idx}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Card 
+                        className="cursor-pointer bg-background border border-primary/20 shadow-sm hover:border-primary/40 hover:shadow-md transition-all"
+                        onClick={() => operation.path && handleNavigate(operation.path)}
+                      >
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                            <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-medium">{operation.title}</h3>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {operation.description}
+                            </p>
+                          </div>
+                        </CardContent>
+                        <CardFooter className="px-4 py-2 border-t border-border/20 flex justify-end">
+                          <Button size="sm" variant="ghost" className="h-8">
+                            <Plus size={14} className="mr-1" /> Add
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    </motion.div>
+                  ))}
+              </div>
+            </div>
           </div>
         ) : (
+          activeTab === null && (
+            <div className="space-y-8">
+              {/* Create Operations */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">Create</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1"
+                    onClick={() => handleSetActiveTab('create')}
+                    aria-label="View all create operations"
+                  >
+                    View All <ChevronRight size={14} />
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
+                  {filteredOperations.filter(op => op.category === 'create' && op.featured).map((operation, idx) => (
+                    <motion.div
+                      key={operation.id}
+                      initial="hidden"
+                      animate="visible"
+                      variants={cardVariants}
+                      custom={idx}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Card 
+                        className="cursor-pointer bg-background border border-primary/20 shadow-sm hover:border-primary/40 hover:shadow-md transition-all"
+                        onClick={() => operation.path && handleNavigate(operation.path)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={operation.title}
+                      >
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                            <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-medium">{operation.title}</h3>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {operation.description}
+                            </p>
+                          </div>
+                        </CardContent>
+                        <CardFooter className="px-4 py-2 border-t border-border/20 flex justify-end">
+                          <Button size="sm" variant="ghost" className="h-8">
+                            <Plus size={14} className="mr-1" /> Add
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Read Operations */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">Browse</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1"
+                    onClick={() => handleViewAll('read')}
+                    aria-label="View all read operations"
+                  >
+                    View All <ChevronRight size={14} />
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
+                  {readOperations.slice(0, 4).map((operation, idx) => (
+                    <motion.div
+                      key={operation.id}
+                      initial="hidden"
+                      animate="visible"
+                      variants={cardVariants}
+                      custom={idx}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Card 
+                        className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                        onClick={() => operation.path && handleNavigate(operation.path)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={operation.title}
+                      >
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                            <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-medium">{operation.title}</h3>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {operation.description}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Analytics Operations */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">Analytics</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1"
+                    onClick={() => handleViewAll('analytics')}
+                    aria-label="View all analytics operations"
+                  >
+                    View All <ChevronRight size={14} />
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
+                  {analyticsOperations.map((operation, idx) => (
+                    <motion.div
+                      key={operation.id}
+                      initial="hidden"
+                      animate="visible"
+                      variants={cardVariants}
+                      custom={idx}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Card 
+                        className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                        onClick={() => operation.path && handleNavigate(operation.path)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={operation.title}
+                      >
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                            <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-medium">{operation.title}</h3>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {operation.description}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* System Operations */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">System</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1"
+                    onClick={() => handleViewAll('system')}
+                    aria-label="View all system operations"
+                  >
+                    View All <ChevronRight size={14} />
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
+                  {systemOperations.map((operation, idx) => (
+                    <motion.div
+                      key={operation.id}
+                      initial="hidden"
+                      animate="visible"
+                      variants={cardVariants}
+                      custom={idx}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Card 
+                        className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                        onClick={() => operation.path && handleNavigate(operation.path)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={operation.title}
+                      >
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                            <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-medium">{operation.title}</h3>
+                              {operation.badge && (
+                                <Badge variant="secondary" className="text-xs">{operation.badge}</Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {operation.description}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
+        )}
+        
+        {activeTab === 'create' && (
           <div className="space-y-8">
-            {/* Create Operations */}
+            {/* All Create Operations by Category */}
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">Create</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="gap-1"
-                  onClick={() => handleViewAll('create')}
-                  aria-label="View all create operations"
-                >
-                  View All <ChevronRight size={14} />
-                </Button>
-              </div>
+              <h3 className="text-xl font-semibold mb-4">All Create Operations</h3>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
-                {filteredOperations.filter(op => op.category === 'create').slice(0, 4).map((operation, idx) => (
-                  <motion.div
-                    key={operation.id}
-                    initial="hidden"
-                    animate="visible"
-                    variants={cardVariants}
-                    custom={idx}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Card 
-                      className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
-                      onClick={() => operation.path && handleNavigate(operation.path)}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={operation.title}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          operation.path && handleNavigate(operation.path);
-                        }
-                      }}
-                    >
-                      <CardContent className="p-4 flex items-center gap-4">
-                        <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
-                          <operation.icon className={`h-5 w-5 ${operation.color}`} />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-medium">{operation.title}</h3>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {operation.description}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+              {/* Inventory */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium mb-3 flex items-center">
+                  <Package className="mr-2 h-5 w-5 text-blue-600" /> 
+                  Inventory Management
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {createOperations
+                    .filter(op => op.color.includes('blue'))
+                    .map((operation, idx) => (
+                      <motion.div
+                        key={operation.id}
+                        initial="hidden"
+                        animate="visible"
+                        variants={cardVariants}
+                        custom={idx}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Card 
+                          className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                          onClick={() => operation.path && handleNavigate(operation.path)}
+                        >
+                          <CardContent className="p-4 flex items-center gap-4">
+                            <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                              <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-medium">{operation.title}</h3>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {operation.description}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                  ))}
+                </div>
               </div>
-            </div>
-            
-            {/* Read Operations */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">Read</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="gap-1"
-                  onClick={() => handleViewAll('read')}
-                  aria-label="View all read operations"
-                >
-                  View All <ChevronRight size={14} />
-                </Button>
+
+              {/* Orders */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium mb-3 flex items-center">
+                  <ShoppingCart className="mr-2 h-5 w-5 text-green-600" /> 
+                  Orders & Supply Chain
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {createOperations
+                    .filter(op => op.color.includes('green'))
+                    .map((operation, idx) => (
+                      <motion.div
+                        key={operation.id}
+                        initial="hidden"
+                        animate="visible"
+                        variants={cardVariants}
+                        custom={idx}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Card 
+                          className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                          onClick={() => operation.path && handleNavigate(operation.path)}
+                        >
+                          <CardContent className="p-4 flex items-center gap-4">
+                            <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                              <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-medium">{operation.title}</h3>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {operation.description}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                  ))}
+                </div>
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
-                {filteredOperations.filter(op => op.category === 'read').slice(0, 4).map((operation, idx) => (
-                  <motion.div
-                    key={operation.id}
-                    initial="hidden"
-                    animate="visible"
-                    variants={cardVariants}
-                    custom={idx}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Card 
-                      className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
-                      onClick={() => operation.path && handleNavigate(operation.path)}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={operation.title}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          operation.path && handleNavigate(operation.path);
-                        }
-                      }}
-                    >
-                      <CardContent className="p-4 flex items-center gap-4">
-                        <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
-                          <operation.icon className={`h-5 w-5 ${operation.color}`} />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-medium">{operation.title}</h3>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {operation.description}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+
+              {/* Patients */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium mb-3 flex items-center">
+                  <Users className="mr-2 h-5 w-5 text-amber-600" /> 
+                  Patients & Medical
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {createOperations
+                    .filter(op => op.color.includes('amber'))
+                    .map((operation, idx) => (
+                      <motion.div
+                        key={operation.id}
+                        initial="hidden"
+                        animate="visible"
+                        variants={cardVariants}
+                        custom={idx}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Card 
+                          className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                          onClick={() => operation.path && handleNavigate(operation.path)}
+                        >
+                          <CardContent className="p-4 flex items-center gap-4">
+                            <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                              <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-medium">{operation.title}</h3>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {operation.description}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                  ))}
+                </div>
               </div>
-            </div>
-            
-            {/* Analytics Operations */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">Analytics</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="gap-1"
-                  onClick={() => handleViewAll('analytics')}
-                  aria-label="View all analytics operations"
-                >
-                  View All <ChevronRight size={14} />
-                </Button>
+
+              {/* Finance */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium mb-3 flex items-center">
+                  <Receipt className="mr-2 h-5 w-5 text-purple-600" /> 
+                  Financial Management
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {createOperations
+                    .filter(op => op.color.includes('purple'))
+                    .map((operation, idx) => (
+                      <motion.div
+                        key={operation.id}
+                        initial="hidden"
+                        animate="visible"
+                        variants={cardVariants}
+                        custom={idx}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Card 
+                          className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                          onClick={() => operation.path && handleNavigate(operation.path)}
+                        >
+                          <CardContent className="p-4 flex items-center gap-4">
+                            <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                              <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-medium">{operation.title}</h3>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {operation.description}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                  ))}
+                </div>
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
-                {filteredOperations.filter(op => op.category === 'analytics').map((operation, idx) => (
-                  <motion.div
-                    key={operation.id}
-                    initial="hidden"
-                    animate="visible"
-                    variants={cardVariants}
-                    custom={idx}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Card 
-                      className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
-                      onClick={() => operation.path && handleNavigate(operation.path)}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={operation.title}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          operation.path && handleNavigate(operation.path);
-                        }
-                      }}
-                    >
-                      <CardContent className="p-4 flex items-center gap-4">
-                        <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
-                          <operation.icon className={`h-5 w-5 ${operation.color}`} />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-medium">{operation.title}</h3>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {operation.description}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            
-            {/* System Operations */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">System</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="gap-1"
-                  onClick={() => handleViewAll('system')}
-                  aria-label="View all system operations"
-                >
-                  View All <ChevronRight size={14} />
-                </Button>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 min-w-[700px]">
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={cardVariants}
-                  custom={0}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Card 
-                    className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
-                    onClick={() => handleNavigate('/database-explorer')}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Database explorer"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleNavigate('/database-explorer');
-                      }
-                    }}
-                  >
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className="p-2.5 rounded-md bg-slate-600/10">
-                        <Database className="h-5 w-5 text-slate-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium">Database Explorer</h3>
-                          <Badge variant="secondary" className="text-xs">Enhanced</Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Advanced data exploration & management
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-                
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={cardVariants}
-                  custom={1}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Card 
-                    className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
-                    onClick={() => handleNavigate('/database-explorer?view=export')}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Export data"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleNavigate('/database-explorer?view=export');
-                      }
-                    }}
-                  >
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className="p-2.5 rounded-md bg-blue-600/10">
-                        <Download className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium">Export Data</h3>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Export data to CSV/Excel
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-                
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={cardVariants}
-                  custom={2}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Card 
-                    className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
-                    onClick={() => handleNavigate('/database-explorer?view=backup')}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Backup database"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleNavigate('/database-explorer?view=backup');
-                      }
-                    }}
-                  >
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className="p-2.5 rounded-md bg-amber-600/10">
-                        <RotateCw className="h-5 w-5 text-amber-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium">Backup Database</h3>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Create a full database backup
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-                
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={cardVariants}
-                  custom={3}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Card 
-                    className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
-                    onClick={() => handleNavigate('/database-explorer?view=import')}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Import data"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleNavigate('/database-explorer?view=import');
-                      }
-                    }}
-                  >
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className="p-2.5 rounded-md bg-green-600/10">
-                        <Upload className="h-5 w-5 text-green-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium">Import Data</h3>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Import data from CSV/Excel
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+
+              {/* Staff & Administration */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium mb-3 flex items-center">
+                  <UserPlus className="mr-2 h-5 w-5 text-rose-600" /> 
+                  Staff & Administration
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {createOperations
+                    .filter(op => op.color.includes('rose'))
+                    .map((operation, idx) => (
+                      <motion.div
+                        key={operation.id}
+                        initial="hidden"
+                        animate="visible"
+                        variants={cardVariants}
+                        custom={idx}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Card 
+                          className="cursor-pointer bg-background border border-border/30 shadow-sm hover:border-border/60 hover:shadow-md transition-all"
+                          onClick={() => operation.path && handleNavigate(operation.path)}
+                        >
+                          <CardContent className="p-4 flex items-center gap-4">
+                            <div className={`p-2.5 rounded-md ${operation.bgColor}`}>
+                              <operation.icon className={`h-5 w-5 ${operation.color}`} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-medium">{operation.title}</h3>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {operation.description}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

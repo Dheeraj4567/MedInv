@@ -38,19 +38,24 @@ export async function GET() {
       if (isNaN(parseInt(drug_category_id))) {
         return NextResponse.json({ error: 'Drug Category ID must be a number' }, { status: 400 });
      }
-     // Consider adding date validation for expiry_date
 
+     // Step 1: Find the maximum medicine_id in the database
+     const maxIdResult = await executeQuery<[{maxId: number}]>('SELECT MAX(medicine_id) as maxId FROM Medicine');
+     const nextId = maxIdResult[0]?.maxId ? maxIdResult[0].maxId + 1 : 1;
+
+     // Step 2: Include the medicine_id in the INSERT query
      const query = `
-       INSERT INTO Medicine (name, price, manufacturer, expiry_date, drug_category_id)
-       VALUES (?, ?, ?, ?, ?)
+       INSERT INTO Medicine (medicine_id, name, price, manufacturer, expiry_date, drug_category_id)
+       VALUES (?, ?, ?, ?, ?, ?)
      `;
-     // Ensure price and drug_category_id are passed as numbers
-     const params = [name, parseFloat(price), manufacturer, expiry_date, parseInt(drug_category_id)];
+     
+     // Include the generated medicine_id in the params
+     const params = [nextId, name, parseFloat(price), manufacturer, expiry_date, parseInt(drug_category_id)];
 
      const result = await executeQuery<OkPacket>(query, params);
 
      return NextResponse.json(
-       { message: 'Medicine added successfully', medicine_id: result.insertId },
+       { message: 'Medicine added successfully', medicine_id: nextId },
        { status: 201 }
      );
 

@@ -40,7 +40,19 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error('Error creating patient:', error);
-    return NextResponse.json({ error: 'Failed to create patient', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    // Handle specific SQL errors
+    let errorMessage = 'Failed to create patient';
+    if (error instanceof Error) {
+      if ('code' in error && (error as any).code === 'ER_NO_DEFAULT_FOR_FIELD') {
+        errorMessage = 'Database error: patient_id field needs AUTO_INCREMENT. Please update your database schema.';
+      } else if ('code' in error && (error as any).code === 'ER_DUP_ENTRY') {
+        errorMessage = 'A patient with these details already exists.';
+      }
+    }
+    return NextResponse.json({
+      error: errorMessage,
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 

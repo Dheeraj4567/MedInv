@@ -25,7 +25,8 @@ import { AlertCircle } from 'lucide-react';
 // Interfaces
 interface DrugCategory {
   drug_category_id: number;
-  name: string;
+  drug_category_name: string; // Changed from 'name' to match API response
+  common_uses?: string;
 }
 
 interface Medicine {
@@ -104,6 +105,7 @@ export function MedicineForm({ medicine, isOpen, onOpenChange, onSuccess }: Medi
       const response = await fetch('/api/drug-categories');
       if (!response.ok) throw new Error('Failed to fetch drug categories');
       const data = await response.json();
+      console.log("Fetched drug categories:", data); // Debug log
       setDrugCategories(data);
     } catch (err) {
       console.error("Error fetching drug categories:", err);
@@ -270,14 +272,14 @@ export function MedicineForm({ medicine, isOpen, onOpenChange, onSuccess }: Medi
                     <SelectTrigger id="med-category">
                       <SelectValue placeholder="Select Category" />
                     </SelectTrigger>
-                    <SelectContent>
-                      {drugCategories.length > 0 ? (
+                    <SelectContent className="z-[1001]">
+                      {drugCategories && drugCategories.length > 0 ? (
                         drugCategories.map((cat) => (
                           <SelectItem 
                             key={cat.drug_category_id} 
                             value={String(cat.drug_category_id)}
                           >
-                            {cat.name}
+                            {cat.drug_category_name}
                           </SelectItem>
                         ))
                       ) : (

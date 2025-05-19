@@ -57,7 +57,13 @@ export default function OrdersPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/orders');
+      // Small delay to ensure database operation has completed
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const response = await fetch('/api/orders', {
+        // Add cache busting to prevent stale data
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
       if (!response.ok) {
         throw new Error(`Failed to fetch orders: ${response.statusText}`);
       }

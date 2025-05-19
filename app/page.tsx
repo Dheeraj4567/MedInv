@@ -49,21 +49,13 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { MedicineForm } from "@/components/medicine-form";
+import { SupplierForm } from "@/components/supplier-form";
+import { InventoryForm } from "@/components/inventory-form";
 
 // Interface for the fetched key stats
 interface KeyStat {
@@ -123,16 +115,14 @@ export default function DashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [expiryProgress, setExpiryProgress] = useState(0);
-  const [showQuickAddDialog, setShowQuickAddDialog] = useState(false);
-  const [quickAddType, setQuickAddType] = useState<
-    "medicine" | "supplier" | "inventory" | null
-  >(null);
-  const [dateRange, setDateRange] = useState<"today" | "week" | "month" | "year">(
-    "week"
-  );
   const [dashboardView, setDashboardView] = useState<"standard" | "appHub">(
     "standard"
   );
+
+  // State for individual forms
+  const [showMedicineForm, setShowMedicineForm] = useState(false);
+  const [showSupplierForm, setShowSupplierForm] = useState(false);
+  const [showInventoryForm, setShowInventoryForm] = useState(false);
 
   // State for fetched key stats
   const [dashboardStats, setDashboardStats] = useState<DashboardKeyStats | null>(
@@ -218,8 +208,7 @@ export default function DashboardPage() {
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
       onClick: () => {
-        setQuickAddType("medicine");
-        setShowQuickAddDialog(true);
+        setShowMedicineForm(true);
       },
     },
     {
@@ -229,8 +218,7 @@ export default function DashboardPage() {
       color: "text-green-500",
       bgColor: "bg-green-500/10",
       onClick: () => {
-        setQuickAddType("inventory");
-        setShowQuickAddDialog(true);
+        setShowInventoryForm(true);
       },
     },
     {
@@ -240,28 +228,42 @@ export default function DashboardPage() {
       color: "text-amber-500",
       bgColor: "bg-amber-500/10",
       onClick: () => {
-        setQuickAddType("supplier");
-        setShowQuickAddDialog(true);
+        setShowSupplierForm(true);
       },
     },
     {
-      title: "View Reports",
-      icon: FileBarChart2,
-      description: "View detailed analytics",
+      title: "App Hub",
+      icon: PlusCircle,
+      description: "Explore more actions",
       color: "text-purple-500",
       bgColor: "bg-purple-500/10",
-      onClick: () => router.push("/analytics"),
+      onClick: () => setDashboardView("appHub"),
     },
   ];
 
-  // Low stock alerts
-  const lowStockAlerts = [
-    { name: "Paracetamol (500mg)", quantity: 25, threshold: 100 },
-    { name: "Aspirin (300mg)", quantity: 18, threshold: 50 },
-    { name: "Ibuprofen (400mg)", quantity: 32, threshold: 75 },
-  ];
+  // Refresh data
+  const refreshData = () => {
+    setRefreshing(true);
+    toast({
+      title: "Refreshing dashboard data",
+      description: "Fetching the latest information from the database",
+    });
 
-  // Fetch Key Stats
+    setTimeout(() => {
+      setRefreshing(false);
+      toast({
+        title: "Dashboard updated",
+        description: "All data has been refreshed with the latest information",
+        variant: "success",
+      });
+    }, 1500);
+  };
+
+  // Handle form success
+  const handleFormSuccess = () => {
+    refreshData();
+  };
+
   useEffect(() => {
     async function fetchKeyStats() {
       setStatsLoading(true);
@@ -315,39 +317,6 @@ export default function DashboardPage() {
     };
   }, []);
 
-  const refreshData = () => {
-    setRefreshing(true);
-    toast({
-      title: "Refreshing dashboard data",
-      description: "Fetching the latest information from the database",
-    });
-
-    setTimeout(() => {
-      setRefreshing(false);
-      toast({
-        title: "Dashboard updated",
-        description: "All data has been refreshed with the latest information",
-        variant: "success",
-      });
-    }, 1500);
-  };
-
-  const handleQuickAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    setShowQuickAddDialog(false);
-
-    toast({
-      title: `${
-        quickAddType === "medicine"
-          ? "Medicine"
-          : quickAddType === "supplier"
-          ? "Supplier"
-          : "Inventory"
-      } added successfully`,
-      variant: "success",
-    });
-  };
-
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
@@ -373,18 +342,6 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                "gap-1",
-                dashboardView === "standard" ? "bg-muted" : ""
-              )}
-              onClick={() => setDashboardView("standard")}
-            >
-              <Package size={14} />
-              Standard View
-            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -584,32 +541,6 @@ export default function DashboardPage() {
                               Summary of recent orders and trends
                             </CardDescription>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={dateRange === "today" ? "bg-muted" : ""}
-                              onClick={() => setDateRange("today")}
-                            >
-                              Today
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={dateRange === "week" ? "bg-muted" : ""}
-                              onClick={() => setDateRange("week")}
-                            >
-                              Week
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={dateRange === "month" ? "bg-muted" : ""}
-                              onClick={() => setDateRange("month")}
-                            >
-                              Month
-                            </Button>
-                          </div>
                         </CardHeader>
 
                         <CardContent>
@@ -644,7 +575,11 @@ export default function DashboardPage() {
 
                         <CardContent className="p-0">
                           <div className="divide-y divide-border/40">
-                            {lowStockAlerts.map((item, index) => (
+                            {[
+                              { name: "Paracetamol (500mg)", quantity: 25, threshold: 100 },
+                              { name: "Aspirin (300mg)", quantity: 18, threshold: 50 },
+                              { name: "Ibuprofen (400mg)", quantity: 32, threshold: 75 },
+                            ].map((item, index) => (
                               <div
                                 key={index}
                                 className="p-3 flex justify-between items-center text-sm"
@@ -834,7 +769,11 @@ export default function DashboardPage() {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
-                          {lowStockAlerts.map((item, idx) => (
+                          {[
+                            { name: "Paracetamol (500mg)", quantity: 25, threshold: 100 },
+                            { name: "Aspirin (300mg)", quantity: 18, threshold: 50 },
+                            { name: "Ibuprofen (400mg)", quantity: 32, threshold: 75 },
+                          ].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between">
                               <div>
                                 <p className="font-medium">{item.name}</p>
@@ -862,89 +801,83 @@ export default function DashboardPage() {
                         </Button>
                       </CardFooter>
                     </Card>
-                  </div>
 
-                  <Card className="border-border/40 mt-6">
-                    <CardHeader className="pb-2">
-                      <CardTitle>System Notifications</CardTitle>
-                      <CardDescription>
-                        Recent system alerts and notifications
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {[
-                          {
-                            title: "System Maintenance",
-                            message:
-                              "Scheduled system maintenance on May 5, 2025 at 2:00 AM",
-                            time: "2 days ago",
-                            type: "info",
-                          },
-                          {
-                            title: "Database Backup Completed",
-                            message:
-                              "Automatic database backup completed successfully",
-                            time: "12 hours ago",
-                            type: "success",
-                          },
-                          {
-                            title: "License Renewal Reminder",
-                            message:
-                              "Your software license will expire in 15 days",
-                            time: "1 day ago",
-                            type: "warning",
-                          },
-                        ].map((notification, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-start gap-3 p-3 rounded-md bg-muted/50"
-                          >
+                    <Card className="border-border/40 mt-6">
+                      <CardHeader className="pb-2">
+                        <CardTitle>System Notifications</CardTitle>
+                        <CardDescription>
+                          Recent system alerts and notifications
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {[
+                            {
+                              title: "System Maintenance",
+                              message:
+                                "Scheduled system maintenance on May 5, 2025 at 2:00 AM",
+                              time: "2 days ago",
+                              type: "info",
+                            },
+                            {
+                              title: "Database Backup Completed",
+                              message:
+                                "Automatic database backup completed successfully",
+                              time: "12 hours ago",
+                              type: "success",
+                            },
+                            {
+                              title: "License Renewal Reminder",
+                              message:
+                                "Your software license will expire in 15 days",
+                              time: "1 day ago",
+                              type: "warning",
+                            },
+                          ].map((notification, idx) => (
                             <div
-                              className={cn(
-                                "w-8 h-8 rounded-full flex items-center justify-center",
-                                notification.type === "info"
-                                  ? "bg-blue-500/10"
-                                  : notification.type === "success"
-                                  ? "bg-green-500/10"
-                                  : notification.type === "warning"
-                                  ? "bg-amber-500/10"
-                                  : "bg-rose-500/10"
-                              )}
+                              key={idx}
+                              className="flex items-start gap-3 p-3 rounded-md bg-muted/50"
                             >
-                              {notification.type === "info" && (
-                                <Search size={16} className="text-blue-500" />
-                              )}
-                              {notification.type === "success" && (
-                                <Activity size={16} className="text-green-500" />
-                              )}
-                              {notification.type === "warning" && (
-                                <AlertTriangle
-                                  size={16}
-                                  className="text-amber-500"
-                                />
-                              )}
-                              {notification.type === "error" && (
-                                <AlertTriangle
-                                  size={16}
-                                  className="text-rose-500"
-                                />
-                              )}
+                              <div
+                                className={cn(
+                                  "w-8 h-8 rounded-full flex items-center justify-center",
+                                  notification.type === "info"
+                                    ? "bg-blue-500/10"
+                                    : notification.type === "success"
+                                    ? "bg-green-500/10"
+                                    : notification.type === "warning"
+                                    ? "bg-amber-500/10"
+                                    : "bg-rose-500/10"
+                                )}
+                              >
+                                {notification.type === "info" && (
+                                  <Search size={16} className="text-blue-500" />
+                                )}
+                                {notification.type === "success" && (
+                                  <Activity size={16} className="text-green-500" />
+                                )}
+                                {notification.type === "warning" && (
+                                  <AlertTriangle
+                                    size={16}
+                                    className="text-amber-500"
+                                  />
+                                )}
+                              </div>
+                              <div className="flex-grow">
+                                <p className="font-medium">{notification.title}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {notification.message}
+                                </p>
+                                <div className="text-xs text-muted-foreground">
+                                  {notification.time}
+                                </div>
+                              </div>
                             </div>
-                            <div className="flex-grow">
-                              <p className="font-medium">{notification.title}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {notification.message}
-                              </p>
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {notification.time}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>
@@ -952,94 +885,27 @@ export default function DashboardPage() {
         )}
       </DashboardShell>
 
-      <Dialog open={showQuickAddDialog} onOpenChange={setShowQuickAddDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {quickAddType === "medicine"
-                ? "Add New Medicine"
-                : quickAddType === "supplier"
-                ? "Add New Supplier"
-                : "Update Inventory"}
-            </DialogTitle>
-            <DialogDescription>
-              {quickAddType === "medicine"
-                ? "Enter the details of the new medicine to add to the inventory."
-                : quickAddType === "supplier"
-                ? "Enter the details of the new supplier to add to the system."
-                : "Update the stock levels of existing inventory items."}
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleQuickAdd} className="space-y-4">
-            {quickAddType === "medicine" && (
-              <>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Medicine Name</Label>
-                    <Input id="name" placeholder="Enter medicine name" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="category">Category</Label>
-                      <Input id="category" placeholder="Medicine category" />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="quantity">Initial Quantity</Label>
-                      <Input id="quantity" type="number" placeholder="Enter quantity" />
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-            {quickAddType === "supplier" && (
-              <>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Supplier Name</Label>
-                    <Input id="name" placeholder="Enter supplier name" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="contact">Contact Information</Label>
-                    <Input id="contact" placeholder="Phone or email" />
-                  </div>
-                </div>
-              </>
-            )}
-            {quickAddType === "inventory" && (
-              <>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="medicine">Select Medicine</Label>
-                    <Input id="medicine" placeholder="Search for medicine" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="batch">Batch Number</Label>
-                      <Input id="batch" placeholder="Enter batch number" />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="quantity">Quantity to Add</Label>
-                      <Input id="quantity" type="number" placeholder="Enter quantity" />
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-            <DialogFooter>
-              <Button variant="outline" type="button" onClick={() => setShowQuickAddDialog(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">
-                {quickAddType === "medicine"
-                  ? "Add Medicine"
-                  : quickAddType === "supplier"
-                  ? "Add Supplier"
-                  : "Update Inventory"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      {/* Use the proper form components */}
+      <MedicineForm
+        medicine={null}
+        isOpen={showMedicineForm}
+        onOpenChange={setShowMedicineForm}
+        onSuccess={handleFormSuccess}
+      />
+      
+      <SupplierForm
+        supplier={null}
+        isOpen={showSupplierForm}
+        onOpenChange={setShowSupplierForm}
+        onSuccess={handleFormSuccess}
+      />
+      
+      <InventoryForm
+        item={null}
+        isOpen={showInventoryForm}
+        onOpenChange={setShowInventoryForm}
+        onSuccess={handleFormSuccess}
+      />
     </AppLayout>
   );
 }

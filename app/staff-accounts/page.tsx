@@ -178,8 +178,8 @@ export default function StaffAccountsPage() {
                  <TableBody className="table-row-hover">
                    {filteredAccounts.length > 0 ? (
                      filteredAccounts.map((acc) => (
-                      <TableRow key={acc.username}>
-                        <TableCell className="font-medium">{acc.username}</TableCell>
+                      <TableRow key={acc.username || `row-${Math.random()}`}>
+                        <TableCell className="font-medium">{acc.username || 'N/A'}</TableCell>
                         <TableCell>{acc.employee_name || 'N/A'}</TableCell>
                         <TableCell>{acc.role || 'N/A'}</TableCell>
                         <TableCell className="space-x-1">
@@ -201,11 +201,11 @@ export default function StaffAccountsPage() {
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  This action cannot be undone. This will permanently delete the account "{acc.username}".
+                                  This action cannot be undone. This will permanently delete the account "{acc.username || 'Unknown User'}".
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel onClick={() => setActionError(null)}>Cancel</AlertDialogCancel> {/* Clear error on cancel */}
+                                <AlertDialogCancel onClick={() => setActionError(null)}>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => handleDelete(acc.username)}
                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
