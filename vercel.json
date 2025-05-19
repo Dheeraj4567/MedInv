@@ -1,11 +1,12 @@
 {
   "version": 2,
   "buildCommand": "next build",
-  "installCommand": "npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
   "regions": ["iad1"],
   "outputDirectory": ".next",
   "env": {
-    "DEPLOYMENT_MODE": "planetscale"
+    "DEPLOYMENT_MODE": "demo",
+    "NODE_ENV": "production"
   }
 }

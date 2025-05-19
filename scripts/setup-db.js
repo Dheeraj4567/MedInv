@@ -44,11 +44,20 @@ async function main() {
   console.log('\nChoose an option:');
   console.log('1. Set up local MySQL database');
   console.log('2. Generate SQL for PlanetScale/cloud database');
-  console.log('3. Exit');
+  console.log('3. Configure for demo mode (no database needed)');
+  console.log('4. Exit');
   
-  const answer = await new Promise(resolve => {
-    rl.question('\nEnter option (1-3): ', resolve);
-  });
+  // Check for direct command line argument
+  const cmdArg = process.argv[2];
+  let answer = '';
+  
+  if (cmdArg) {
+    answer = cmdArg;
+  } else {
+    answer = await new Promise(resolve => {
+      rl.question('\nEnter option (1-4): ', resolve);
+    });
+  }
   
   switch (answer) {
     case '1':
@@ -58,6 +67,9 @@ async function main() {
       generateCloudSQL();
       break;
     case '3':
+      configureDemoMode();
+      break;
+    case '4':
     default:
       console.log('Exiting setup script.');
       process.exit(0);
@@ -157,6 +169,50 @@ DATABASE_URL=mysql://username:password@region.connect.psdb.cloud/database_name?s
 NOTE: Both Vercel and PlanetScale offer free tiers that are sufficient for MedInv.
 No credit card is required for deploying this application!
   `);
+}
+
+function configureDemoMode() {
+  console.log('\nConfiguring for demo mode...');
+  console.log('No database setup required for demo mode!');
+  
+  // Create or update .env.local with demo mode configuration
+  const envPath = path.join(__dirname, '../.env.local');
+  const envContent = `# Demo Mode Configuration
+DEPLOYMENT_MODE=demo
+NODE_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+`;
+
+  fs.writeFileSync(envPath, envContent);
+  
+  console.log('\nDemo mode configuration complete!');
+  console.log(`
+Configuration for .env.local:
+----------------------------
+DEPLOYMENT_MODE=demo
+NODE_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+No database connection is needed in demo mode.
+Data will be stored in memory and reset on page refresh.
+`);
+
+  // Create or update .env.production for Vercel deployment
+  const prodEnvPath = path.join(__dirname, '../.env.production');
+  const prodEnvContent = `# Demo Mode Configuration for Production
+DEPLOYMENT_MODE=demo
+NODE_ENV=production
+`;
+
+  fs.writeFileSync(prodEnvPath, prodEnvContent);
+  
+  console.log('\nFor Vercel deployment:');
+  console.log(`
+Configuration for Vercel:
+-----------------------
+DEPLOYMENT_MODE=demo
+NODE_ENV=production
+`);
 }
 
 async function prompt(question) {
