@@ -14,9 +14,13 @@ export async function POST(req: NextRequest) {
     // Find the staff account by username
     // Select only existing columns
     const query = 'SELECT username, password, employee_id FROM StaffAccount WHERE username = ?';
+    console.log(`[Login] Attempting login for user: ${username} in mode: ${getCurrentDeploymentMode()}`);
+    
     const users = await executeQuery<any[]>(query, [username]);
+    console.log(`[Login] Query result:`, users);
 
     if (users.length === 0) {
+      console.log(`[Login] User not found: ${username}`);
       return NextResponse.json({ message: 'Invalid username or password' }, { status: 401 }); // User not found
     }
 

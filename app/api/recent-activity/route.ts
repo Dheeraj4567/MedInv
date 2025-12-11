@@ -10,7 +10,7 @@ export async function GET() {
 
     // Check if the result is empty
     if (recentActivity.length === 0) {
-      return NextResponse.json({ message: 'No recent activity found' }, { status: 404 });
+      return NextResponse.json([]);
     }
 
     return NextResponse.json(recentActivity);

@@ -148,7 +148,12 @@ const seedDemoData = () => {
   memoryDatabase.StaffAccount = [
     { username: 'admin', password: 'admin123', employee_id: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { username: 'nurse', password: 'nurse123', employee_id: 2, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { username: 'pharmacist', password: 'pharm123', employee_id: 3, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { username: 'pharmacist', password: 'pharm123', employee_id: 3, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { username: 'dr_stone', password: 'password123', employee_id: 4, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { username: 'admin_james', password: 'password123', employee_id: 5, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { username: 'nurse_linda', password: 'password123', employee_id: 6, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { username: 'pharm_robert', password: 'password123', employee_id: 7, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { username: 'receptionist', password: 'password123', employee_id: 8, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
   
   // Pre-populated patients
@@ -157,21 +162,41 @@ const seedDemoData = () => {
     { patient_id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', phone_number: '9876543210', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { patient_id: 3, name: 'Rajesh Kumar', email: 'rajesh@example.com', phone_number: '9876543211', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { patient_id: 4, name: 'Emily Davis', email: 'emily.d@example.com', phone_number: '5551234567', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { patient_id: 5, name: 'Michael Brown', email: 'm.brown@example.com', phone_number: '5559876543', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { patient_id: 5, name: 'Michael Brown', email: 'm.brown@example.com', phone_number: '5559876543', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 6, name: 'Sarah Connor', email: 'sarah.c@example.com', phone_number: '5551112233', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 7, name: 'Robert Wilson', email: 'r.wilson@example.com', phone_number: '5554445566', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 8, name: 'Lisa Taylor', email: 'lisa.t@example.com', phone_number: '5557778899', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 9, name: 'James Anderson', email: 'j.anderson@example.com', phone_number: '5550001122', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 10, name: 'Jennifer Thomas', email: 'j.thomas@example.com', phone_number: '5553334455', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 11, name: 'William Jackson', email: 'w.jackson@example.com', phone_number: '5556667788', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 12, name: 'Elizabeth White', email: 'e.white@example.com', phone_number: '5559990011', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 13, name: 'David Harris', email: 'd.harris@example.com', phone_number: '5552223344', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 14, name: 'Patricia Martin', email: 'p.martin@example.com', phone_number: '5555556677', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 15, name: 'Richard Thompson', email: 'r.thompson@example.com', phone_number: '5558889900', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated suppliers
   memoryDatabase.Supplier = [
     { supplier_id: 1, name: 'MediSupply Inc.', email: 'contact@medisupply.com', phone_number: '1122334455', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { supplier_id: 2, name: 'PharmaWholesale', email: 'info@pharmawholesale.com', phone_number: '5566778899', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { supplier_id: 3, name: 'Global Health Distributors', email: 'sales@globalhealth.com', phone_number: '9988776655', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { supplier_id: 3, name: 'Global Health Distributors', email: 'sales@globalhealth.com', phone_number: '9988776655', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { supplier_id: 4, name: 'Apex Pharmaceuticals', email: 'orders@apexpharma.com', phone_number: '5551239876', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { supplier_id: 5, name: 'BioLife Solutions', email: 'support@biolife.com', phone_number: '5559871234', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { supplier_id: 6, name: 'CarePlus Supplies', email: 'sales@careplus.com', phone_number: '5554567890', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { supplier_id: 7, name: 'DirectMeds', email: 'contact@directmeds.com', phone_number: '5557890123', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { supplier_id: 8, name: 'Elite Medical', email: 'info@elitemedical.com', phone_number: '5552345678', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated employees
   memoryDatabase.Employee = [
     { employee_id: 1, name: 'Dr. Mike Johnson', email: 'mike.johnson@hospital.com', phone_number: '1231231234', role: 'Doctor', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { employee_id: 2, name: 'Nurse Sarah Williams', email: 'sarah.williams@hospital.com', phone_number: '4564564567', role: 'Nurse', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { employee_id: 3, name: 'David Chen', email: 'david.chen@hospital.com', phone_number: '7897897890', role: 'Pharmacist', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { employee_id: 3, name: 'David Chen', email: 'david.chen@hospital.com', phone_number: '7897897890', role: 'Pharmacist', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { employee_id: 4, name: 'Dr. Emily Stone', email: 'emily.stone@hospital.com', phone_number: '5551112222', role: 'Doctor', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { employee_id: 5, name: 'James Wilson', email: 'james.wilson@hospital.com', phone_number: '5553334444', role: 'Administrator', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { employee_id: 6, name: 'Linda Martinez', email: 'linda.martinez@hospital.com', phone_number: '5555556666', role: 'Nurse', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { employee_id: 7, name: 'Robert Taylor', email: 'robert.taylor@hospital.com', phone_number: '5557778888', role: 'Pharmacist', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { employee_id: 8, name: 'Susan Clark', email: 'susan.clark@hospital.com', phone_number: '5559990000', role: 'Receptionist', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated medicines
@@ -181,7 +206,16 @@ const seedDemoData = () => {
     { medicine_id: 3, name: 'Loratadine', description: 'Antihistamine for allergies', price: 15.50, unit: 'box', expiry_date: '2026-01-15', manufacturer: 'AllergyMeds Inc.', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { medicine_id: 4, name: 'Ibuprofen', description: 'Nonsteroidal anti-inflammatory drug', price: 12.99, unit: 'bottle', expiry_date: '2025-11-20', manufacturer: 'MediCorp', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { medicine_id: 5, name: 'Metformin', description: 'Diabetes medication', price: 25.00, unit: 'pack', expiry_date: '2026-03-10', manufacturer: 'DiabetCare', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { medicine_id: 6, name: 'Atorvastatin', description: 'Cholesterol lowering medication', price: 30.00, unit: 'pack', expiry_date: '2025-09-15', manufacturer: 'HeartHealth', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { medicine_id: 6, name: 'Atorvastatin', description: 'Cholesterol lowering medication', price: 30.00, unit: 'pack', expiry_date: '2025-09-15', manufacturer: 'HeartHealth', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 7, name: 'Lisinopril', description: 'High blood pressure medication', price: 22.50, unit: 'pack', expiry_date: '2026-05-20', manufacturer: 'CardioPharma', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 8, name: 'Omeprazole', description: 'Acid reflux medication', price: 18.75, unit: 'box', expiry_date: '2025-10-05', manufacturer: 'GastroMeds', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 9, name: 'Levothyroxine', description: 'Thyroid hormone replacement', price: 28.00, unit: 'bottle', expiry_date: '2026-02-28', manufacturer: 'ThyroCare', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 10, name: 'Amlodipine', description: 'Calcium channel blocker', price: 14.99, unit: 'pack', expiry_date: '2025-08-12', manufacturer: 'HeartHealth', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 11, name: 'Metoprolol', description: 'Beta blocker', price: 16.50, unit: 'bottle', expiry_date: '2025-12-10', manufacturer: 'CardioPharma', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 12, name: 'Albuterol', description: 'Bronchodilator inhaler', price: 45.00, unit: 'inhaler', expiry_date: '2026-04-15', manufacturer: 'RespiraTech', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 13, name: 'Gabapentin', description: 'Nerve pain medication', price: 35.00, unit: 'bottle', expiry_date: '2025-11-30', manufacturer: 'NeuroMeds', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 14, name: 'Sertraline', description: 'Antidepressant', price: 40.00, unit: 'bottle', expiry_date: '2026-06-20', manufacturer: 'MindCare', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 15, name: 'Hydrochlorothiazide', description: 'Diuretic', price: 11.50, unit: 'bottle', expiry_date: '2025-07-25', manufacturer: 'MediCorp', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated inventory
@@ -191,57 +225,218 @@ const seedDemoData = () => {
     { inventory_id: 3, medicine_id: 3, quantity: 75, location: 'Shelf C3', last_updated: new Date().toISOString() },
     { inventory_id: 4, medicine_id: 4, quantity: 120, location: 'Shelf A2', last_updated: new Date().toISOString() },
     { inventory_id: 5, medicine_id: 5, quantity: 200, location: 'Shelf D1', last_updated: new Date().toISOString() },
-    { inventory_id: 6, medicine_id: 6, quantity: 150, location: 'Shelf D2', last_updated: new Date().toISOString() }
+    { inventory_id: 6, medicine_id: 6, quantity: 150, location: 'Shelf D2', last_updated: new Date().toISOString() },
+    { inventory_id: 7, medicine_id: 7, quantity: 80, location: 'Shelf E1', last_updated: new Date().toISOString() },
+    { inventory_id: 8, medicine_id: 8, quantity: 60, location: 'Shelf E2', last_updated: new Date().toISOString() },
+    { inventory_id: 9, medicine_id: 9, quantity: 90, location: 'Shelf F1', last_updated: new Date().toISOString() },
+    { inventory_id: 10, medicine_id: 10, quantity: 110, location: 'Shelf F2', last_updated: new Date().toISOString() },
+    { inventory_id: 11, medicine_id: 11, quantity: 70, location: 'Shelf G1', last_updated: new Date().toISOString() },
+    { inventory_id: 12, medicine_id: 12, quantity: 40, location: 'Shelf G2', last_updated: new Date().toISOString() },
+    { inventory_id: 13, medicine_id: 13, quantity: 55, location: 'Shelf H1', last_updated: new Date().toISOString() },
+    { inventory_id: 14, medicine_id: 14, quantity: 65, location: 'Shelf H2', last_updated: new Date().toISOString() },
+    { inventory_id: 15, medicine_id: 15, quantity: 130, location: 'Shelf I1', last_updated: new Date().toISOString() }
   ];
 
-  // Pre-populated orders
+  // Pre-populated orders - Expanded for Analytics
+  const today = new Date();
+  const months = [];
+  for (let i = 0; i < 6; i++) {
+    const d = new Date(today);
+    d.setMonth(today.getMonth() - i);
+    months.push(d.toISOString().slice(0, 7)); // YYYY-MM
+  }
+
   memoryDatabase.Orders = [
-    { order_id: 1, patient_id: 1, supplier_id: 1, employee_id: 1, order_date: '2025-05-15', created_at: new Date().toISOString() },
-    { order_id: 2, patient_id: 2, supplier_id: 2, employee_id: 2, order_date: '2025-05-18', created_at: new Date().toISOString() },
-    { order_id: 3, patient_id: 3, supplier_id: 1, employee_id: 3, order_date: '2025-05-20', created_at: new Date().toISOString() }
+    // Recent orders (Current Month)
+    { order_id: 1, patient_id: 1, supplier_id: 1, employee_id: 1, order_date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() },
+    { order_id: 2, patient_id: 2, supplier_id: 2, employee_id: 2, order_date: new Date(Date.now() - 86400000).toISOString().split('T')[0], created_at: new Date().toISOString() },
+    { order_id: 3, patient_id: 3, supplier_id: 1, employee_id: 3, order_date: new Date(Date.now() - 172800000).toISOString().split('T')[0], created_at: new Date().toISOString() },
+    { order_id: 4, patient_id: 4, supplier_id: 3, employee_id: 1, order_date: new Date(Date.now() - 259200000).toISOString().split('T')[0], created_at: new Date().toISOString() },
+    
+    // Last Month
+    { order_id: 5, patient_id: 5, supplier_id: 2, employee_id: 2, order_date: `${months[1]}-15`, created_at: new Date().toISOString() },
+    { order_id: 6, patient_id: 1, supplier_id: 1, employee_id: 3, order_date: `${months[1]}-20`, created_at: new Date().toISOString() },
+    { order_id: 7, patient_id: 2, supplier_id: 3, employee_id: 1, order_date: `${months[1]}-25`, created_at: new Date().toISOString() },
+    
+    // 2 Months Ago
+    { order_id: 8, patient_id: 3, supplier_id: 1, employee_id: 2, order_date: `${months[2]}-10`, created_at: new Date().toISOString() },
+    { order_id: 9, patient_id: 4, supplier_id: 2, employee_id: 3, order_date: `${months[2]}-15`, created_at: new Date().toISOString() },
+    { order_id: 10, patient_id: 5, supplier_id: 3, employee_id: 1, order_date: `${months[2]}-22`, created_at: new Date().toISOString() },
+
+    // 3 Months Ago
+    { order_id: 11, patient_id: 1, supplier_id: 1, employee_id: 2, order_date: `${months[3]}-05`, created_at: new Date().toISOString() },
+    { order_id: 12, patient_id: 2, supplier_id: 2, employee_id: 3, order_date: `${months[3]}-12`, created_at: new Date().toISOString() },
+    { order_id: 13, patient_id: 3, supplier_id: 3, employee_id: 1, order_date: `${months[3]}-18`, created_at: new Date().toISOString() },
+
+    // 4 Months Ago
+    { order_id: 14, patient_id: 4, supplier_id: 1, employee_id: 2, order_date: `${months[4]}-08`, created_at: new Date().toISOString() },
+    { order_id: 15, patient_id: 5, supplier_id: 2, employee_id: 3, order_date: `${months[4]}-16`, created_at: new Date().toISOString() },
+    { order_id: 16, patient_id: 1, supplier_id: 3, employee_id: 1, order_date: `${months[4]}-24`, created_at: new Date().toISOString() },
+
+    // 5 Months Ago
+    { order_id: 17, patient_id: 2, supplier_id: 1, employee_id: 2, order_date: `${months[5]}-03`, created_at: new Date().toISOString() },
+    { order_id: 18, patient_id: 3, supplier_id: 2, employee_id: 3, order_date: `${months[5]}-14`, created_at: new Date().toISOString() },
+    { order_id: 19, patient_id: 4, supplier_id: 3, employee_id: 1, order_date: `${months[5]}-21`, created_at: new Date().toISOString() },
+    { order_id: 20, patient_id: 5, supplier_id: 1, employee_id: 2, order_date: `${months[5]}-28`, created_at: new Date().toISOString() }
   ];
 
-  // Pre-populated order items
+  // Pre-populated order items - Expanded for Analytics
   memoryDatabase.OrderItems = [
+    // Order 1
     { order_id: 1, medicine_id: 1, quantity: 2 },
     { order_id: 1, medicine_id: 4, quantity: 1 },
+    // Order 2
     { order_id: 2, medicine_id: 2, quantity: 1 },
-    { order_id: 3, medicine_id: 5, quantity: 3 }
+    // Order 3
+    { order_id: 3, medicine_id: 5, quantity: 3 },
+    // Order 4
+    { order_id: 4, medicine_id: 3, quantity: 2 },
+    { order_id: 4, medicine_id: 6, quantity: 1 },
+    
+    // Order 5
+    { order_id: 5, medicine_id: 1, quantity: 5 },
+    { order_id: 5, medicine_id: 2, quantity: 2 },
+    // Order 6
+    { order_id: 6, medicine_id: 4, quantity: 3 },
+    // Order 7
+    { order_id: 7, medicine_id: 5, quantity: 4 },
+    { order_id: 7, medicine_id: 6, quantity: 2 },
+
+    // Order 8
+    { order_id: 8, medicine_id: 1, quantity: 3 },
+    { order_id: 8, medicine_id: 3, quantity: 2 },
+    // Order 9
+    { order_id: 9, medicine_id: 2, quantity: 4 },
+    // Order 10
+    { order_id: 10, medicine_id: 4, quantity: 2 },
+    { order_id: 10, medicine_id: 5, quantity: 1 },
+
+    // Order 11
+    { order_id: 11, medicine_id: 6, quantity: 3 },
+    // Order 12
+    { order_id: 12, medicine_id: 1, quantity: 4 },
+    { order_id: 12, medicine_id: 2, quantity: 2 },
+    // Order 13
+    { order_id: 13, medicine_id: 3, quantity: 3 },
+
+    // Order 14
+    { order_id: 14, medicine_id: 4, quantity: 5 },
+    // Order 15
+    { order_id: 15, medicine_id: 5, quantity: 2 },
+    { order_id: 15, medicine_id: 6, quantity: 1 },
+    // Order 16
+    { order_id: 16, medicine_id: 1, quantity: 6 },
+
+    // Order 17
+    { order_id: 17, medicine_id: 2, quantity: 3 },
+    // Order 18
+    { order_id: 18, medicine_id: 3, quantity: 4 },
+    // Order 19
+    { order_id: 19, medicine_id: 4, quantity: 2 },
+    { order_id: 19, medicine_id: 5, quantity: 3 },
+    // Order 20
+    { order_id: 20, medicine_id: 6, quantity: 2 },
+    { order_id: 20, medicine_id: 1, quantity: 3 }
   ];
 
   // Pre-populated medical logs
   memoryDatabase.MedicalLogs = [
     { log_id: 1, patient_id: 1, medicine_id: 1, log_date: '2025-05-15', dosage: '1 tablet every 6 hours', notes: 'Patient reported headache relief after first dose', created_at: new Date().toISOString() },
     { log_id: 2, patient_id: 2, medicine_id: 2, log_date: '2025-05-16', dosage: '1 capsule twice daily', notes: 'Treating respiratory infection', created_at: new Date().toISOString() },
-    { log_id: 3, patient_id: 3, medicine_id: 5, log_date: '2025-05-20', dosage: '500mg with meals', notes: 'Routine checkup for diabetes management', created_at: new Date().toISOString() }
+    { log_id: 3, patient_id: 3, medicine_id: 5, log_date: '2025-05-20', dosage: '500mg with meals', notes: 'Routine checkup for diabetes management', created_at: new Date().toISOString() },
+    { log_id: 4, patient_id: 4, medicine_id: 3, log_date: '2025-05-22', dosage: '10mg daily', notes: 'Seasonal allergy symptoms improving', created_at: new Date().toISOString() },
+    { log_id: 5, patient_id: 5, medicine_id: 6, log_date: '2025-05-25', dosage: '20mg at night', notes: 'Cholesterol levels monitoring required', created_at: new Date().toISOString() },
+    { log_id: 6, patient_id: 1, medicine_id: 4, log_date: '2025-06-01', dosage: '400mg as needed', notes: 'For joint pain', created_at: new Date().toISOString() },
+    { log_id: 7, patient_id: 6, medicine_id: 7, log_date: '2025-06-02', dosage: '10mg daily', notes: 'Blood pressure stable', created_at: new Date().toISOString() },
+    { log_id: 8, patient_id: 7, medicine_id: 8, log_date: '2025-06-03', dosage: '20mg before breakfast', notes: 'Acid reflux symptoms controlled', created_at: new Date().toISOString() },
+    { log_id: 9, patient_id: 8, medicine_id: 9, log_date: '2025-06-04', dosage: '50mcg daily', notes: 'TSH levels normal', created_at: new Date().toISOString() },
+    { log_id: 10, patient_id: 9, medicine_id: 10, log_date: '2025-06-05', dosage: '5mg daily', notes: 'Monitor for ankle swelling', created_at: new Date().toISOString() },
+    { log_id: 11, patient_id: 10, medicine_id: 11, log_date: '2025-06-06', dosage: '25mg twice daily', notes: 'Heart rate controlled', created_at: new Date().toISOString() },
+    { log_id: 12, patient_id: 11, medicine_id: 12, log_date: '2025-06-07', dosage: '2 puffs every 4 hours prn', notes: 'Asthma exacerbation', created_at: new Date().toISOString() },
+    { log_id: 13, patient_id: 12, medicine_id: 13, log_date: '2025-06-08', dosage: '300mg at night', notes: 'Neuropathic pain management', created_at: new Date().toISOString() },
+    { log_id: 14, patient_id: 13, medicine_id: 14, log_date: '2025-06-09', dosage: '50mg daily', notes: 'Mood improved', created_at: new Date().toISOString() },
+    { log_id: 15, patient_id: 14, medicine_id: 15, log_date: '2025-06-10', dosage: '12.5mg daily', notes: 'Blood pressure check required', created_at: new Date().toISOString() }
   ];
 
   // Pre-populated prescriptions
   memoryDatabase.Prescription = [
     { prescription_id: 1, patient_id: 1, employee_id: 1, date: '2025-05-15', notes: 'Take with food' },
     { prescription_id: 2, patient_id: 2, employee_id: 1, date: '2025-05-16', notes: 'Complete full course' },
-    { prescription_id: 3, patient_id: 3, employee_id: 1, date: '2025-05-20', notes: 'Monitor blood sugar levels' }
+    { prescription_id: 3, patient_id: 3, employee_id: 1, date: '2025-05-20', notes: 'Monitor blood sugar levels' },
+    { prescription_id: 4, patient_id: 4, employee_id: 4, date: '2025-05-22', notes: 'Avoid driving if drowsy' },
+    { prescription_id: 5, patient_id: 5, employee_id: 1, date: '2025-05-25', notes: 'Low fat diet recommended' },
+    { prescription_id: 6, patient_id: 6, employee_id: 4, date: '2025-06-01', notes: 'Regular BP checks' },
+    { prescription_id: 7, patient_id: 7, employee_id: 1, date: '2025-06-02', notes: 'Take on empty stomach' },
+    { prescription_id: 8, patient_id: 8, employee_id: 4, date: '2025-06-03', notes: 'Take in the morning' },
+    { prescription_id: 9, patient_id: 9, employee_id: 1, date: '2025-06-04', notes: 'Do not skip doses' },
+    { prescription_id: 10, patient_id: 10, employee_id: 4, date: '2025-06-05', notes: 'Report side effects' },
+    { prescription_id: 11, patient_id: 11, employee_id: 1, date: '2025-06-06', notes: 'Follow asthma action plan' },
+    { prescription_id: 12, patient_id: 12, employee_id: 4, date: '2025-06-07', notes: 'Taper dose as instructed' },
+    { prescription_id: 13, patient_id: 13, employee_id: 1, date: '2025-06-08', notes: 'May cause dizziness' },
+    { prescription_id: 14, patient_id: 14, employee_id: 4, date: '2025-06-09', notes: 'Take with plenty of water' },
+    { prescription_id: 15, patient_id: 15, employee_id: 1, date: '2025-06-10', notes: 'Review in 2 weeks' }
   ];
 
   // Pre-populated prescription items
   memoryDatabase.PrescriptionItem = [
     { item_id: 1, prescription_id: 1, medicine_id: 1, dosage: '500mg', frequency: 'Every 6 hours', duration: '5 days' },
     { item_id: 2, prescription_id: 2, medicine_id: 2, dosage: '250mg', frequency: 'Twice daily', duration: '7 days' },
-    { item_id: 3, prescription_id: 3, medicine_id: 5, dosage: '500mg', frequency: 'Once daily', duration: '30 days' }
+    { item_id: 3, prescription_id: 3, medicine_id: 5, dosage: '500mg', frequency: 'Once daily', duration: '30 days' },
+    { item_id: 4, prescription_id: 4, medicine_id: 3, dosage: '10mg', frequency: 'Once daily', duration: '14 days' },
+    { item_id: 5, prescription_id: 5, medicine_id: 6, dosage: '20mg', frequency: 'Once daily', duration: '30 days' },
+    { item_id: 6, prescription_id: 6, medicine_id: 7, dosage: '10mg', frequency: 'Once daily', duration: '30 days' },
+    { item_id: 7, prescription_id: 7, medicine_id: 8, dosage: '20mg', frequency: 'Once daily', duration: '14 days' },
+    { item_id: 8, prescription_id: 8, medicine_id: 9, dosage: '50mcg', frequency: 'Once daily', duration: '90 days' },
+    { item_id: 9, prescription_id: 9, medicine_id: 10, dosage: '5mg', frequency: 'Once daily', duration: '30 days' },
+    { item_id: 10, prescription_id: 10, medicine_id: 11, dosage: '25mg', frequency: 'Twice daily', duration: '30 days' },
+    { item_id: 11, prescription_id: 11, medicine_id: 12, dosage: '2 puffs', frequency: 'Every 4 hours', duration: 'As needed' },
+    { item_id: 12, prescription_id: 12, medicine_id: 13, dosage: '300mg', frequency: 'Once daily', duration: '30 days' },
+    { item_id: 13, prescription_id: 13, medicine_id: 14, dosage: '50mg', frequency: 'Once daily', duration: '30 days' },
+    { item_id: 14, prescription_id: 14, medicine_id: 15, dosage: '12.5mg', frequency: 'Once daily', duration: '30 days' },
+    { item_id: 15, prescription_id: 15, medicine_id: 1, dosage: '500mg', frequency: 'Every 8 hours', duration: '3 days' }
   ];
 
   // Pre-populated billing
   memoryDatabase.Billing = [
     { billing_id: 1, patient_id: 1, date: '2025-05-15', amount: 32.97, status: 'Paid' },
     { billing_id: 2, patient_id: 2, date: '2025-05-16', amount: 19.99, status: 'Pending' },
-    { billing_id: 3, patient_id: 3, date: '2025-05-20', amount: 75.00, status: 'Paid' }
+    { billing_id: 3, patient_id: 3, date: '2025-05-20', amount: 75.00, status: 'Paid' },
+    { billing_id: 4, patient_id: 4, date: '2025-05-22', amount: 45.50, status: 'Paid' },
+    { billing_id: 5, patient_id: 5, date: '2025-05-25', amount: 120.00, status: 'Overdue' },
+    { billing_id: 6, patient_id: 6, date: '2025-06-01', amount: 55.00, status: 'Paid' },
+    { billing_id: 7, patient_id: 7, date: '2025-06-02', amount: 30.00, status: 'Pending' },
+    { billing_id: 8, patient_id: 8, date: '2025-06-03', amount: 85.00, status: 'Paid' },
+    { billing_id: 9, patient_id: 9, date: '2025-06-04', amount: 40.00, status: 'Paid' },
+    { billing_id: 10, patient_id: 10, date: '2025-06-05', amount: 60.00, status: 'Pending' },
+    { billing_id: 11, patient_id: 11, date: '2025-06-06', amount: 95.00, status: 'Paid' },
+    { billing_id: 12, patient_id: 12, date: '2025-06-07', amount: 25.00, status: 'Paid' },
+    { billing_id: 13, patient_id: 13, date: '2025-06-08', amount: 110.00, status: 'Overdue' },
+    { billing_id: 14, patient_id: 14, date: '2025-06-09', amount: 70.00, status: 'Paid' },
+    { billing_id: 15, patient_id: 15, date: '2025-06-10', amount: 50.00, status: 'Pending' }
   ];
 
-  // Pre-populated activity logs
+  // Pre-populated activity logs - Expanded for Recent Activity
   memoryDatabase.ActivityLog = [
     { id: 1, action: 'LOGIN', details: 'User admin logged in', type: 'AUTH', timestamp: new Date().toISOString(), user_name: 'admin' },
-    { id: 2, action: 'UPDATE_INVENTORY', details: 'Updated stock for Paracetamol', type: 'INVENTORY', timestamp: new Date(Date.now() - 86400000).toISOString(), user_name: 'admin' },
-    { id: 3, action: 'CREATE_PRESCRIPTION', details: 'Created prescription for John Doe', type: 'CLINICAL', timestamp: new Date(Date.now() - 172800000).toISOString(), user_name: 'Dr. Mike Johnson' }
+    { id: 2, action: 'CREATE_ORDER', details: 'Created Order #21 for Patient John Doe', type: 'ORDER', timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(), user_name: 'admin' },
+    { id: 3, action: 'UPDATE_INVENTORY', details: 'Updated stock for Paracetamol (+50 units)', type: 'INVENTORY', timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), user_name: 'pharmacist' },
+    { id: 4, action: 'LOGIN', details: 'User pharmacist logged in', type: 'AUTH', timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(), user_name: 'pharmacist' },
+    { id: 5, action: 'CREATE_PRESCRIPTION', details: 'Created prescription for Jane Smith', type: 'CLINICAL', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), user_name: 'Dr. Mike Johnson' },
+    { id: 6, action: 'UPDATE_PATIENT', details: 'Updated contact info for Rajesh Kumar', type: 'ADMIN', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), user_name: 'admin' },
+    { id: 7, action: 'LOGIN', details: 'User nurse logged in', type: 'AUTH', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), user_name: 'nurse' },
+    { id: 8, action: 'ADD_MEDICINE', details: 'Added new medicine: Lisinopril', type: 'INVENTORY', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), user_name: 'pharmacist' },
+    { id: 9, action: 'CREATE_ORDER', details: 'Created Order #20 for Patient Emily Davis', type: 'ORDER', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(), user_name: 'admin' },
+    { id: 10, action: 'UPDATE_INVENTORY', details: 'Stock adjustment for Amoxicillin (-10 units)', type: 'INVENTORY', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 28).toISOString(), user_name: 'pharmacist' },
+    { id: 11, action: 'LOGIN', details: 'User admin logged in', type: 'AUTH', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(), user_name: 'admin' },
+    { id: 12, action: 'CREATE_PRESCRIPTION', details: 'Created prescription for Michael Brown', type: 'CLINICAL', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), user_name: 'Dr. Mike Johnson' },
+    { id: 13, action: 'UPDATE_SUPPLIER', details: 'Updated details for MediSupply Inc.', type: 'ADMIN', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(), user_name: 'admin' },
+    { id: 14, action: 'LOGIN', details: 'User Dr. Mike Johnson logged in', type: 'AUTH', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 52).toISOString(), user_name: 'Dr. Mike Johnson' },
+    { id: 15, action: 'CREATE_ORDER', details: 'Created Order #19 for Patient Rajesh Kumar', type: 'ORDER', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), user_name: 'admin' },
+    { id: 16, action: 'UPDATE_INVENTORY', details: 'Received shipment from Global Health', type: 'INVENTORY', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 75).toISOString(), user_name: 'pharmacist' },
+    { id: 17, action: 'LOGIN', details: 'User pharmacist logged in', type: 'AUTH', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 76).toISOString(), user_name: 'pharmacist' },
+    { id: 18, action: 'ADD_PATIENT', details: 'Registered new patient: Sarah Connor', type: 'ADMIN', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 96).toISOString(), user_name: 'nurse' },
+    { id: 19, action: 'CREATE_PRESCRIPTION', details: 'Created prescription for Emily Davis', type: 'CLINICAL', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 100).toISOString(), user_name: 'Dr. Mike Johnson' },
+    { id: 20, action: 'LOGIN', details: 'User admin logged in', type: 'AUTH', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 120).toISOString(), user_name: 'admin' }
   ];
   
   // Alias mapping for compatibility
@@ -251,30 +446,46 @@ const seedDemoData = () => {
 
   // Pre-populated drug categories
   memoryDatabase.DrugCategory = [
-    { category_id: 1, name: 'Analgesics', description: 'Pain relievers' },
-    { category_id: 2, name: 'Antibiotics', description: 'Treat bacterial infections' },
-    { category_id: 3, name: 'Antihistamines', description: 'Treat allergies' },
-    { category_id: 4, name: 'Antidiabetics', description: 'Treat diabetes' },
-    { category_id: 5, name: 'Cardiovascular', description: 'Heart and blood vessel medications' }
+    { category_id: 1, drug_category_id: 1, name: 'Analgesics', drug_category_name: 'Analgesics', description: 'Pain relievers', common_uses: 'Pain relief, fever reduction' },
+    { category_id: 2, drug_category_id: 2, name: 'Antibiotics', drug_category_name: 'Antibiotics', description: 'Treat bacterial infections', common_uses: 'Bacterial infections' },
+    { category_id: 3, drug_category_id: 3, name: 'Antihistamines', drug_category_name: 'Antihistamines', description: 'Treat allergies', common_uses: 'Allergies, hay fever' },
+    { category_id: 4, drug_category_id: 4, name: 'Antidiabetics', drug_category_name: 'Antidiabetics', description: 'Treat diabetes', common_uses: 'Type 2 Diabetes management' },
+    { category_id: 5, drug_category_id: 5, name: 'Cardiovascular', drug_category_name: 'Cardiovascular', description: 'Heart and blood vessel medications', common_uses: 'Hypertension, heart failure' },
+    { category_id: 6, drug_category_id: 6, name: 'Antidepressants', drug_category_name: 'Antidepressants', description: 'Treat depression', common_uses: 'Depression, anxiety disorders' },
+    { category_id: 7, drug_category_id: 7, name: 'Antacids', drug_category_name: 'Antacids', description: 'Neutralize stomach acid', common_uses: 'Heartburn, indigestion' },
+    { category_id: 8, drug_category_id: 8, name: 'Bronchodilators', drug_category_name: 'Bronchodilators', description: 'Open airways', common_uses: 'Asthma, COPD' },
+    { category_id: 9, drug_category_id: 9, name: 'Diuretics', drug_category_name: 'Diuretics', description: 'Increase urine production', common_uses: 'Hypertension, edema' },
+    { category_id: 10, drug_category_id: 10, name: 'Antivirals', drug_category_name: 'Antivirals', description: 'Treat viral infections', common_uses: 'Flu, Herpes, HIV' }
   ];
   memoryDatabase.medicinecategories = memoryDatabase.DrugCategory;
 
   // Pre-populated feedback
   memoryDatabase.Feedback = [
     { feedback_id: 1, user_id: 1, message: 'Great system, very easy to use!', rating: 5, created_at: new Date().toISOString() },
-    { feedback_id: 2, user_id: 2, message: 'Would like to see more detailed reports.', rating: 4, created_at: new Date().toISOString() }
+    { feedback_id: 2, user_id: 2, message: 'Would like to see more detailed reports.', rating: 4, created_at: new Date().toISOString() },
+    { feedback_id: 3, user_id: 3, message: 'Inventory tracking is accurate.', rating: 5, created_at: new Date().toISOString() },
+    { feedback_id: 4, user_id: 4, message: 'Sometimes loads slowly on mobile.', rating: 3, created_at: new Date().toISOString() },
+    { feedback_id: 5, user_id: 5, message: 'Excellent support from the IT team.', rating: 5, created_at: new Date().toISOString() },
+    { feedback_id: 6, user_id: 1, message: 'The new dashboard layout is intuitive.', rating: 4, created_at: new Date().toISOString() },
+    { feedback_id: 7, user_id: 2, message: 'Need more filter options in orders.', rating: 3, created_at: new Date().toISOString() },
+    { feedback_id: 8, user_id: 3, message: 'Billing process is smooth.', rating: 5, created_at: new Date().toISOString() }
   ];
 
   // Pre-populated expiry alerts
   memoryDatabase.ExpiryAlert = [
     { alert_id: 1, medicine_id: 2, alert_date: '2025-06-01', message: 'Amoxicillin expiring soon', status: 'Active' },
-    { alert_id: 2, medicine_id: 6, alert_date: '2025-08-15', message: 'Atorvastatin expiring in 30 days', status: 'Active' }
+    { alert_id: 2, medicine_id: 6, alert_date: '2025-08-15', message: 'Atorvastatin expiring in 30 days', status: 'Active' },
+    { alert_id: 3, medicine_id: 8, alert_date: '2025-10-05', message: 'Omeprazole expiring in 3 months', status: 'Active' },
+    { alert_id: 4, medicine_id: 15, alert_date: '2025-07-25', message: 'Hydrochlorothiazide expiring soon', status: 'Active' }
   ];
 
   // Pre-populated discounts
   memoryDatabase.Discount = [
-    { discount_id: 1, code: 'SUMMER10', percentage: 10, valid_until: '2025-08-31' },
-    { discount_id: 2, code: 'SENIOR20', percentage: 20, valid_until: '2025-12-31' }
+    { discount_id: 1, code: 'SUMMER10', name: 'Summer Sale', description: '10% off on all items', percentage: 10, start_date: '2025-06-01', end_date: '2025-08-31', valid_until: '2025-08-31', status: 'Active' },
+    { discount_id: 2, code: 'SENIOR20', name: 'Senior Citizen Discount', description: '20% off for seniors', percentage: 20, start_date: '2025-01-01', end_date: '2025-12-31', valid_until: '2025-12-31', status: 'Active' },
+    { discount_id: 3, code: 'WELCOME5', name: 'New Patient Discount', description: '5% off first order', percentage: 5, start_date: '2025-01-01', end_date: '2025-12-31', valid_until: '2025-12-31', status: 'Active' },
+    { discount_id: 4, code: 'BULK15', name: 'Bulk Purchase', description: '15% off orders over $100', percentage: 15, start_date: '2025-01-01', end_date: '2025-12-31', valid_until: '2025-12-31', status: 'Active' },
+    { discount_id: 5, code: 'EXPIRED', name: 'Winter Sale', description: 'Winter clearance', percentage: 25, start_date: '2024-12-01', end_date: '2025-02-28', valid_until: '2025-02-28', status: 'Expired' }
   ];
 
   // Pre-populated analytics data
