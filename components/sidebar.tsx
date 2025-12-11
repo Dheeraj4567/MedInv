@@ -902,7 +902,7 @@ export default function Sidebar({ collapsed, toggleCollapsed, className, onExpan
                 variant="outline" // Changed variant for better distinction
                 size="sm" // Adjusted size
                 className="h-9 w-full rounded-md flex items-center justify-center gap-2" // Adjusted styling
-                onClick={() => window.location.href = 'http://localhost:3000/database-explorer?table=ActivityLog'}
+                onClick={() => router.push('/database-explorer?table=ActivityLog')}
               >
                 <Database size={16} /> {/* Adjusted icon size */}
                 {(!collapsed || autoExpand) && <span>DB Explorer</span>} {/* Show text only when expanded */}
@@ -916,7 +916,7 @@ export default function Sidebar({ collapsed, toggleCollapsed, className, onExpan
                       variant="outline"
                       size="icon"
                       className="h-9 w-9 rounded-md"
-                      onClick={() => window.location.href = 'http://localhost:3000/database-explorer?table=ActivityLog'}
+                      onClick={() => router.push('/database-explorer?table=ActivityLog')}
                     >
                       <Database size={16} />
                       <span className="sr-only">Database Explorer</span>

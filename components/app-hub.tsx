@@ -441,7 +441,7 @@ export function AppHub() {
     try {
       // Special case for ActivityLog table
       if (tableName === "ActivityLog") {
-        router.push("http://localhost:3000/database-explorer?table=ActivityLog");
+        router.push("/database-explorer?table=ActivityLog");
         return;
       }
       
