@@ -28,7 +28,8 @@ const dbConfig = {
 // Default to 'demo' if running on Vercel without explicit configuration, or if DB_HOST is missing
 const isVercel = process.env.VERCEL === '1';
 const hasDbConfig = !!process.env.DB_HOST;
-const deploymentMode = process.env.DEPLOYMENT_MODE || (isVercel && !hasDbConfig ? 'demo' : 'local');
+// Use demo mode if explicitly set, OR if we are on Vercel without DB config, OR if we are local without DB config
+const deploymentMode = process.env.DEPLOYMENT_MODE || ((isVercel || !hasDbConfig) ? 'demo' : 'local');
 
 // Create connection pool based on deployment mode (only if not in demo mode)
 export const pool = deploymentMode !== 'demo' 

@@ -671,10 +671,14 @@ function handleSumQuery(query: string, params: any[]): Array<Record<string, numb
 
 // Handle WHERE clause queries
 function handleWhereQuery(query: string, params: any[], tableName: string): any[] {
-  if (!memoryDatabase[tableName]) return [];
+  // Handle case-insensitive table lookup
+  const dbKey = Object.keys(memoryDatabase).find(k => k.toLowerCase() === tableName.toLowerCase());
+  if (!dbKey || !memoryDatabase[dbKey]) return [];
+  
+  const tableData = memoryDatabase[dbKey];
   
   const whereMatch = query.match(/where\s+(.+)$/i);
-  if (!whereMatch) return memoryDatabase[tableName];
+  if (!whereMatch) return tableData;
   
   const whereCondition = whereMatch[1].toLowerCase();
   
@@ -684,10 +688,10 @@ function handleWhereQuery(query: string, params: any[], tableName: string): any[
     const field = whereFieldMatch[1];
     const value = params[0];
     
-    return memoryDatabase[tableName].filter(item => item[field] == value); // Loose comparison
+    return tableData.filter(item => item[field] == value); // Loose comparison
   }
   
-  return memoryDatabase[tableName];
+  return tableData;
 }
 
 // Reset the demo database to its initial state
