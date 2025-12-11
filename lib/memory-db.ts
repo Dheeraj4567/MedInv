@@ -738,6 +738,28 @@ function handleJoinQuery(query: string, params: any[]): any[] {
     
     return results;
   }
+
+  // Handle Inventory Distribution - Categories
+  if (mainTable === 'medicineCategories' && query.includes('group by mc.drug_category_name')) {
+    return [
+      { name: 'Analgesics', count: 15, total_quantity: 450, value: 4500.00 },
+      { name: 'Antibiotics', count: 12, total_quantity: 320, value: 6400.00 },
+      { name: 'Antihistamines', count: 8, total_quantity: 200, value: 3000.00 },
+      { name: 'Antidiabetics', count: 10, total_quantity: 500, value: 12500.00 },
+      { name: 'Cardiovascular', count: 14, total_quantity: 420, value: 12600.00 }
+    ];
+  }
+
+  // Handle Inventory Distribution - Locations
+  if (mainTable === 'Inventory' && query.includes('group by i.location')) {
+    return [
+      { name: 'Shelf A1', count: 5, total_quantity: 150, value: 2250.00 },
+      { name: 'Shelf B2', count: 4, total_quantity: 120, value: 2400.00 },
+      { name: 'Shelf C3', count: 6, total_quantity: 180, value: 2700.00 },
+      { name: 'Shelf D1', count: 8, total_quantity: 240, value: 6000.00 },
+      { name: 'Shelf D2', count: 7, total_quantity: 210, value: 6300.00 }
+    ];
+  }
   
   // If we don't have a specific handler, return empty array
   return [];
@@ -814,6 +836,11 @@ function handleCountQuery(query: string, params: any[]): Array<Record<string, nu
 
 // Handle SUM queries
 function handleSumQuery(query: string, params: any[]): Array<Record<string, number>> {
+  // Only handle simple SUM queries, not complex ones with GROUP BY or multiple columns
+  if (query.includes('group by') || query.includes(',')) {
+    return []; // Let it fall through to other handlers or return empty
+  }
+
   // Extract the field being summed - improved regex to handle expressions
   // Matches SUM(...) AS alias
   const sumMatch = query.match(/sum\((.*?)\)\s+as\s+(\w+)/i);
