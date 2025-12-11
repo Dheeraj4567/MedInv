@@ -5,25 +5,26 @@ interface InventoryItem {
   inventory_number: number;
   medicine_id: number;
   medicine_name: string;
-  supplier_id: number;
-  supplier_name: string;
+  supplier_id: number | null;
+  supplier_name: string | null;
   quantity: number;
 }
 
 export async function GET() {
   try {
+    // Note: Inventory table uses inventory_id, not inventory_number
+    // Note: Inventory table does not have supplier_id, so we return null for supplier info
     const query = `
       SELECT 
-        i.inventory_number,
+        i.inventory_id as inventory_number,
         i.medicine_id,
         m.name as medicine_name,
-        i.supplier_id,
-        s.name as supplier_name,
+        NULL as supplier_id,
+        NULL as supplier_name,
         i.quantity
       FROM Inventory i
       LEFT JOIN Medicine m ON i.medicine_id = m.medicine_id
-      LEFT JOIN Supplier s ON i.supplier_id = s.supplier_id
-      ORDER BY i.inventory_number ASC
+      ORDER BY i.inventory_id ASC
     `;
 
     const inventory = await executeQuery<InventoryItem[]>(query);
@@ -58,21 +59,22 @@ export async function GET() {
      const { medicine_id, supplier_id, quantity } = body;
 
      // Validate input
-     if (!medicine_id || !supplier_id || quantity == null || quantity <= 0) {
+     if (!medicine_id || quantity == null || quantity <= 0) {
        return NextResponse.json(
-         { error: 'Medicine ID, Supplier ID, and a positive Quantity are required' },
+         { error: 'Medicine ID and a positive Quantity are required' },
          { status: 400 }
        );
      }
 
-     // TODO: Add checks to ensure medicine_id and supplier_id exist in their respective tables
+     // TODO: Add checks to ensure medicine_id exists
 
-     // Modified query to use AUTO_INCREMENT for inventory_number
+     // Modified query to use AUTO_INCREMENT for inventory_id
+     // Note: Ignoring supplier_id as it is not in the schema
      const query = `
-       INSERT INTO Inventory (medicine_id, supplier_id, quantity)
-       VALUES (?, ?, ?)
+       INSERT INTO Inventory (medicine_id, quantity)
+       VALUES (?, ?)
      `;
-     const params = [medicine_id, supplier_id, quantity];
+     const params = [medicine_id, quantity];
 
      const result = await executeQuery<OkPacket>(query, params);
 

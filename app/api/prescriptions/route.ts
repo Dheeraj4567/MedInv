@@ -13,19 +13,19 @@ interface PrescriptionInfo {
 
 export async function GET() {
   try {
-    // This query joins Prescription with Patient and counts items from PrescriptionDetails
+    // This query joins Prescription with Patient and counts items from PrescriptionItem
     const query = `
       SELECT 
         p.prescription_id, 
         p.patient_id, 
         pt.name AS patient_name, 
-        p.document_id,
-        COUNT(pd.medicine_id) AS medicine_count
+        CONCAT('P', p.prescription_id) AS document_id,
+        COUNT(pi.medicine_id) AS medicine_count
         -- Add other columns like doctor_name, date, status here if they exist in Prescription table
       FROM Prescription p
       JOIN Patient pt ON p.patient_id = pt.patient_id
-      LEFT JOIN PrescriptionDetails pd ON p.prescription_id = pd.prescription_id
-      GROUP BY p.prescription_id, pt.name, p.document_id -- Group by main prescription info
+      LEFT JOIN PrescriptionItem pi ON p.prescription_id = pi.prescription_id
+      GROUP BY p.prescription_id, pt.name, document_id -- Group by main prescription info
       ORDER BY p.prescription_id DESC; 
       -- Consider adding date ordering if a date column exists
     `;

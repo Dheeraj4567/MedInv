@@ -229,11 +229,12 @@ export function InventoryDistribution({ className }: InventoryDistributionProps)
   }
   
   if (!inventoryStats) return null;
-  
+
   const activeData = getSortedData();
   const selectedData = activeView === 'category' ? inventoryStats.categories : inventoryStats.locations;
   
-  return <Card className={cn("border-border/40 shadow-sm h-full flex flex-col", className)}>
+  return (
+    <Card className={cn("border-border/40 shadow-sm h-full flex flex-col", className)}>
       <CardHeader className="border-b border-border/40 pb-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
@@ -315,7 +316,7 @@ export function InventoryDistribution({ className }: InventoryDistributionProps)
                     <div className="flex items-center gap-2">
                       <div 
                         className="w-2.5 h-2.5 rounded-full ring-2 ring-offset-2 ring-offset-card" 
-                        style={{ backgroundColor: item.color, --tw-ring-color: item.color } as React.CSSProperties}
+                        style={{ backgroundColor: item.color, '--tw-ring-color': item.color } as React.CSSProperties}
                       />
                       <span className="font-medium text-sm text-foreground">
                         {item.name}
@@ -385,5 +386,6 @@ export function InventoryDistribution({ className }: InventoryDistributionProps)
           }
         </Button>
       </CardFooter>
-    </Card>;
+    </Card>
+  );
 }

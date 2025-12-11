@@ -16,10 +16,11 @@ interface FeedbackInfo {
   feedback_id: number;
   patient_id: number;
   patient_name: string;
-  ratings: number | null;
+  title: string;
+  description: string | null;
+  rating: number | null;
+  feedback_date: string;
   // Placeholder fields
-  date?: string;
-  comment?: string;
   status?: 'Reviewed' | 'Pending' | 'Unknown';
 }
 
@@ -40,9 +41,7 @@ const FeedbackPage = () => { // Changed to arrow function
           // Add placeholder data
           const processedData = data.map(item => ({
             ...item,
-            date: 'N/A', // Placeholder
-            comment: 'N/A', // Placeholder - API needs update
-            status: 'Unknown' as const // Placeholder
+            status: 'Pending' as const // Placeholder
           }));
           setFeedbacks(processedData);
         } else {
@@ -100,9 +99,10 @@ const FeedbackPage = () => { // Changed to arrow function
                   <TableRow>
                     <TableHead className="w-[100px]">Feedback ID</TableHead>
                     <TableHead>Patient Name</TableHead>
+                    <TableHead>Title</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Rating</TableHead>
-                    <TableHead className="w-[300px]">Comment</TableHead>
+                    <TableHead className="w-[300px]">Description</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -110,15 +110,16 @@ const FeedbackPage = () => { // Changed to arrow function
                   {feedbacks.map((feedback) => (
                     <TableRow key={feedback.feedback_id}>
                       <TableCell className="font-medium">{feedback.feedback_id}</TableCell>
-                      <TableCell>{feedback.patient_name}</TableCell>
-                      <TableCell>{feedback.date}</TableCell> {/* Placeholder */}
+                      <TableCell>{feedback.patient_name || 'Anonymous'}</TableCell>
+                      <TableCell>{feedback.title}</TableCell>
+                      <TableCell>{new Date(feedback.feedback_date).toLocaleDateString()}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className={`text-xs px-1.5 py-0.5 ${getRatingColor(feedback.ratings)}`}>
-                          {feedback.ratings !== null ? `${feedback.ratings}/5` : 'N/A'}
+                        <Badge variant="outline" className={`text-xs px-1.5 py-0.5 ${getRatingColor(feedback.rating)}`}>
+                          {feedback.rating !== null ? `${feedback.rating}/5` : 'N/A'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="max-w-[300px] truncate" title={feedback.comment}>
-                        {feedback.comment} {/* Placeholder */}
+                      <TableCell className="max-w-[300px] truncate" title={feedback.description || ''}>
+                        {feedback.description || 'No description'}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`text-xs px-1.5 py-0.5 ${getStatusColor(feedback.status || 'Unknown')}`}>

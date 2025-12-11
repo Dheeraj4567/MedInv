@@ -10,8 +10,9 @@ interface OkPacket {
 
 export async function GET() {
   try {
+    // Map phone_number to contact_info for frontend compatibility
     const suppliers = await executeQuery<{ supplier_id: number; name: string; contact_info: string }[]>(
-      `SELECT supplier_id, name, contact_info FROM Supplier ORDER BY name ASC`
+      `SELECT supplier_id, name, phone_number as contact_info FROM Supplier ORDER BY name ASC`
     );
     return NextResponse.json(suppliers);
   } catch (error) {
@@ -31,8 +32,9 @@ export async function POST(request: Request) {
       );
     }
     
+    // Map contact_info to phone_number
     const result = await executeQuery<OkPacket>(
-      `INSERT INTO Supplier (name, contact_info) VALUES (?, ?)`,
+      `INSERT INTO Supplier (name, phone_number) VALUES (?, ?)`,
       [body.name, body.contact_info]
     );
     

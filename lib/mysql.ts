@@ -11,6 +11,7 @@ const dbConfig = {
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'test2',
   port: parseInt(process.env.DB_PORT || '3306'),
+  // Do not use socket path, use TCP/IP instead
   ssl: process.env.DB_SSL === 'true' ? {
     rejectUnauthorized: false
   } : undefined,
@@ -24,7 +25,10 @@ const dbConfig = {
 };
 
 // Determine deployment mode
-const deploymentMode = process.env.DEPLOYMENT_MODE || 'local';
+// Default to 'demo' if running on Vercel without explicit configuration, or if DB_HOST is missing
+const isVercel = process.env.VERCEL === '1';
+const hasDbConfig = !!process.env.DB_HOST;
+const deploymentMode = process.env.DEPLOYMENT_MODE || (isVercel && !hasDbConfig ? 'demo' : 'local');
 
 // Create connection pool based on deployment mode (only if not in demo mode)
 export const pool = deploymentMode !== 'demo' 
@@ -55,6 +59,11 @@ async function testConnection(retries = 3, delay = 2000) {
     // Reset the demo database to ensure fresh state
     resetDemoDatabase();
     return true;
+  }
+
+  if (!pool) {
+    console.error('Pool is not initialized');
+    return false;
   }
 
   for (let i = 0; i < retries; i++) {
@@ -107,6 +116,10 @@ export async function executeQuery<T>(query: string, params: any[] = []): Promis
   }
 
   // Otherwise use the actual MySQL database
+  if (!pool) {
+    throw new Error('Database connection pool is not initialized');
+  }
+
   let connection;
   try {
     // Explicitly get a connection from the pool
@@ -147,5 +160,38 @@ export function getCurrentDeploymentMode(): string {
 export function resetDemoDatabaseIfNeeded(): void {
   if (deploymentMode === 'demo') {
     resetDemoDatabase();
+  }
+}
+
+// Execute a raw SQL query (useful for complex queries or database explorer)
+export async function executeRawQuery(query: string, params: any[] = []): Promise<any> {
+  // If in demo mode, use the in-memory database
+  if (deploymentMode === 'demo') {
+    return executeMemoryQuery(query, params);
+  }
+
+  // Otherwise use the actual MySQL database
+  if (!pool) {
+    throw new Error('Database connection pool is not initialized');
+  }
+
+  let connection;
+  try {
+    // Explicitly get a connection from the pool
+    connection = await pool.getConnection();
+    
+    // Execute the raw query
+    const [rows] = await connection.query(query, params);
+    return rows;
+  } catch (error) {
+    console.error('Raw SQL query error:', {
+      error,
+      query,
+      params,
+      timestamp: new Date().toISOString()
+    });
+    throw error;
+  } finally {
+    if (connection) connection.release();
   }
 }

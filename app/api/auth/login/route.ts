@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { executeQuery } from '@/lib/mysql'; // Using path alias for Next.js context
+import { executeQuery, getCurrentDeploymentMode } from '@/lib/mysql'; // Using path alias for Next.js context
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -23,8 +23,21 @@ export async function POST(req: NextRequest) {
     const user = users[0];
 
     // --- Password Verification ---
-    // Compare the provided password with the stored hash
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    // Check the deployment mode
+    const deploymentMode = getCurrentDeploymentMode();
+    
+    let passwordMatch = false;
+    
+    // Check if the password is hashed (bcrypt passwords start with $2a$ or $2b$)
+    const isPasswordHashed = user.password.startsWith('$2a$') || user.password.startsWith('$2b$');
+    
+    if (deploymentMode === 'demo' || !isPasswordHashed) {
+      // In demo mode or if password is plaintext, compare directly
+      passwordMatch = password === user.password;
+    } else {
+      // If password is hashed, use bcrypt
+      passwordMatch = await bcrypt.compare(password, user.password);
+    }
 
     if (!passwordMatch) {
       // Passwords don't match

@@ -9,17 +9,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search } from "lucide-react";
 import React, { useEffect, useState } from 'react'; // Import React hooks
+import { AppLayout } from "@/components/app-layout";
 
 // Define interface based on API response
 interface DiscountInfo {
   discount_id: number;
-  billing_id: number;
+  name: string;
   description: string | null;
+  discount_percent: number;
   start_date: string;
   end_date: string;
-  // Placeholder fields
-  name?: string;
-  percentage?: string;
+  active: number;
   status?: 'Active' | 'Scheduled' | 'Expired' | 'Unknown';
 }
 
@@ -43,7 +43,10 @@ const DiscountsPage = () => { // Changed to arrow function
             const startDate = new Date(item.start_date);
             const endDate = new Date(item.end_date);
             let status: DiscountInfo['status'] = 'Unknown';
-            if (now >= startDate && now <= endDate) {
+            
+            if (!item.active) {
+                status = 'Expired'; // Or Inactive
+            } else if (now >= startDate && now <= endDate) {
               status = 'Active';
             } else if (now < startDate) {
               status = 'Scheduled';
@@ -52,8 +55,6 @@ const DiscountsPage = () => { // Changed to arrow function
             }
             return {
               ...item,
-              name: item.description || 'Unnamed Discount', // Use description as name for now
-              percentage: 'N/A', // Placeholder
               status: status,
             };
           });
@@ -93,7 +94,8 @@ const DiscountsPage = () => { // Changed to arrow function
   };
 
   return (
-    <DashboardShell>
+    <AppLayout>
+      <DashboardShell>
       <DashboardHeader heading="Discounts" text="View and manage discount programs.">
         <Button>
           <Plus className="mr-2 h-4 w-4" />
@@ -118,20 +120,21 @@ const DiscountsPage = () => { // Changed to arrow function
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Discount ID</TableHead>
-                  <TableHead>Name / Description</TableHead>
-                  {/* <TableHead>Percentage</TableHead> */} {/* Hide for now */}
+                  <TableHead>Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Percentage</TableHead>
                   <TableHead>Start Date</TableHead>
                   <TableHead>End Date</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Billing ID</TableHead> {/* Show related Billing ID */}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {discounts.map((discount) => (
                   <TableRow key={discount.discount_id}>
                     <TableCell className="font-medium">{discount.discount_id}</TableCell>
-                    <TableCell>{discount.name}</TableCell> {/* Using description as name */}
-                    {/* <TableCell>{discount.percentage}</TableCell> */} {/* Hide for now */}
+                    <TableCell>{discount.name}</TableCell>
+                    <TableCell>{discount.description}</TableCell>
+                    <TableCell>{discount.discount_percent}%</TableCell>
                     <TableCell>{formatDate(discount.start_date)}</TableCell>
                     <TableCell>{formatDate(discount.end_date)}</TableCell>
                     <TableCell>
@@ -139,7 +142,6 @@ const DiscountsPage = () => { // Changed to arrow function
                         {discount.status || 'Unknown'}
                       </Badge>
                     </TableCell>
-                    <TableCell>{discount.billing_id}</TableCell> {/* Show related Billing ID */}
                   </TableRow>
                 ))}
               </TableBody>
@@ -147,6 +149,9 @@ const DiscountsPage = () => { // Changed to arrow function
           )}
         </CardContent>
       </Card>
-    </DashboardShell>
+      </DashboardShell>
+    </AppLayout>
   )
 }
+
+export default DiscountsPage;

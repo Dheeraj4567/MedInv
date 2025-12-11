@@ -94,6 +94,18 @@
         {"column": "employee_id", "references": "Employee.employee_id"}
       ]
     },
+    "StaffAccount": {
+      "columns": [
+        {"name": "username", "type": "varchar(255)", "key": "PRI"},
+        {"name": "password", "type": "varchar(255)"},
+        {"name": "employee_id", "type": "int", "key": "MUL"},
+        {"name": "created_at", "type": "datetime"},
+        {"name": "updated_at", "type": "datetime"}
+      ],
+      "relationships": [
+        {"column": "employee_id", "references": "Employee.employee_id"}
+      ]
+    },
     "Prescription": {
       "columns": [
         {"name": "prescription_id", "type": "int", "key": "PRI"},

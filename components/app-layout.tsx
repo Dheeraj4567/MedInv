@@ -89,21 +89,21 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* Main content area */}
             <main 
               className={cn(
-                "flex-1 overflow-y-auto h-screen transition-all duration-300 ease-in-out",
+                "flex-1 overflow-y-auto h-screen transition-all duration-300 ease-in-out bg-muted/10", // Added subtle background
                 shouldRenderSidebar && !isSidebarCollapsed && isSidebarVisible && "ml-[260px]",
                 shouldRenderSidebar && isSidebarCollapsed && isSidebarVisible && "ml-[70px]",
                 (!isSidebarVisible || !shouldRenderSidebar) && "ml-0",
-                "pt-2 pb-10 px-6" // Reduced top padding to bring the table closer to the heading
+                "p-8" // Consistent spacious padding
               )}
             >
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={pathname}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="h-full"
+                  initial={{ opacity: 0, y: 10 }} // Added slight slide up
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="h-full max-w-7xl mx-auto" // Center content on very large screens
                 >
                   {children}
                 </motion.div>

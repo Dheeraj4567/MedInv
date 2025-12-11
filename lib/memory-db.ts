@@ -2,9 +2,106 @@
 // This allows users to interact with the app without persistent changes
 
 import { v4 as uuidv4 } from 'uuid';
+import dbSchema from '../context-db.json';
+
+// Define record types for each table
+interface PatientRecord {
+  patient_id: number;
+  name: string;
+  email: string;
+  phone_number: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface MedicineRecord {
+  medicine_id: number;
+  name: string;
+  description?: string;
+  price: number;
+  unit?: string;
+  expiry_date?: string;
+  manufacturer?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface InventoryRecord {
+  inventory_id: number;
+  medicine_id: number;
+  quantity: number;
+  location?: string;
+  last_updated: string;
+}
+
+interface OrderRecord {
+  order_id: number;
+  patient_id: number;
+  supplier_id: number;
+  employee_id: number;
+  order_date: string;
+  created_at: string;
+}
+
+interface OrderItemRecord {
+  order_id: number;
+  medicine_id: number;
+  quantity: number;
+}
+
+interface SupplierRecord {
+  supplier_id: number;
+  name: string;
+  email: string;
+  phone_number: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface EmployeeRecord {
+  employee_id: number;
+  name: string;
+  email: string;
+  phone_number: string;
+  role: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface MedicalLogRecord {
+  log_id: number;
+  patient_id: number;
+  medicine_id: number;
+  log_date: string;
+  dosage: string;
+  notes?: string;
+  created_at: string;
+}
+
+// Define the database schema type
+interface StaffAccountRecord {
+  username: string;
+  password: string;
+  employee_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface MemoryDatabaseSchema {
+  Patient: PatientRecord[];
+  Medicine: MedicineRecord[];
+  Inventory: InventoryRecord[];
+  Orders: OrderRecord[];
+  OrderItems: OrderItemRecord[];
+  Supplier: SupplierRecord[];
+  Employee: EmployeeRecord[];
+  MedicalLogs: MedicalLogRecord[];
+  StaffAccount: StaffAccountRecord[];
+  [key: string]: any[]; // Allow indexing by string for dynamic access
+}
 
 // Demo data storage - resets on page refresh
-let memoryDatabase = {
+let memoryDatabase: MemoryDatabaseSchema = {
   Patient: [],
   Medicine: [],
   Inventory: [],
@@ -12,11 +109,31 @@ let memoryDatabase = {
   OrderItems: [],
   Supplier: [],
   Employee: [],
-  MedicalLogs: []
+  MedicalLogs: [],
+  StaffAccount: [],
+  // Add missing tables from schema to avoid errors
+  DrugCategory: [],
+  medicinecategories: [],
+  Billing: [],
+  EmployeeAccounts: [],
+  Prescription: [],
+  PrescriptionItem: [],
+  Order: [], // Alias for Orders if needed, or separate
+  OrderItem: [], // Alias for OrderItems
+  ExpiryAlert: [],
+  Discount: [],
+  Feedback: [],
+  MedicalLog: [] // Alias for MedicalLogs
 };
 
 // Pre-populated data
 const seedDemoData = () => {
+  // Pre-populated staff accounts for login
+  memoryDatabase.StaffAccount = [
+    { username: 'admin', password: 'admin123', employee_id: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { username: 'nurse', password: 'nurse123', employee_id: 2, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+  ];
+  
   // Pre-populated patients
   memoryDatabase.Patient = [
     { patient_id: 1, name: 'John Doe', email: 'john.doe@example.com', phone_number: '1234567890', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
@@ -70,20 +187,23 @@ const seedDemoData = () => {
 // Initialize with seed data
 seedDemoData();
 
+// Define common return types
+type QueryResult = any[] | { insertId?: number; affectedRows?: number };
+
 // Helper to generate sequential IDs for each table
-const getNextId = (tableName) => {
+const getNextId = (tableName: string): number => {
   const items = memoryDatabase[tableName];
   const idField = tableName.toLowerCase().endsWith('s') 
     ? tableName.toLowerCase().slice(0, -1) + '_id' 
     : tableName.toLowerCase() + '_id';
   
   return items.length > 0 
-    ? Math.max(...items.map(item => item[idField])) + 1 
+    ? Math.max(...items.map(item => item[idField] || 0)) + 1 
     : 1;
 };
 
 // Generic query execution for memory database
-export async function executeMemoryQuery(query, params = []) {
+export async function executeMemoryQuery(query: string, params: any[] = []): Promise<QueryResult> {
   // Parse the query to determine operation
   query = query.trim().toLowerCase();
   
@@ -112,13 +232,60 @@ export async function executeMemoryQuery(query, params = []) {
 }
 
 // Handle SELECT queries
-function handleSelect(query, params) {
+function handleSelect(query: string, params: any[]): any[] {
   // Extract table name - simplified parsing
   let tableName = '';
   
   if (query.includes('from ')) {
     const fromPart = query.split('from ')[1];
     tableName = fromPart.split(' ')[0].trim();
+  }
+
+  // Handle information_schema.tables
+  if (tableName.toLowerCase() === 'information_schema.tables') {
+    return Object.keys(dbSchema.tables).map(name => ({
+      table_name: name,
+      table_rows: 0 // Mock row count
+    })).sort((a, b) => a.table_name.localeCompare(b.table_name));
+  }
+
+  // Handle information_schema.columns
+  if (tableName.toLowerCase() === 'information_schema.columns') {
+    // Extract table name from WHERE clause if possible
+    // Query: ... WHERE TABLE_SCHEMA = 'test2' AND TABLE_NAME = ?
+    // Params usually contain the table name
+    const targetTable = params[params.length - 1]; // Assuming last param is table name
+    if (targetTable && (dbSchema.tables as any)[targetTable]) {
+       const tableDef = (dbSchema.tables as any)[targetTable];
+       return tableDef.columns.map((col: any) => ({
+         name: col.name,
+         type: col.type,
+         nullable: false, // Mock
+         defaultValue: null, // Mock
+         isPrimaryKey: col.key === 'PRI',
+         isForeignKey: col.key === 'MUL' // Approximation
+       }));
+    }
+    return [];
+  }
+
+  // Handle information_schema.key_column_usage
+  if (tableName.toLowerCase() === 'information_schema.key_column_usage') {
+     const targetTable = params[params.length - 1];
+     if (targetTable && (dbSchema.tables as any)[targetTable]) {
+        const tableDef = (dbSchema.tables as any)[targetTable];
+        if (tableDef.relationships) {
+          return tableDef.relationships.map((rel: any) => {
+             const [refTable, refCol] = rel.references.split('.');
+             return {
+               column_name: rel.column,
+               referenced_table: refTable,
+               referenced_column: refCol
+             };
+          });
+        }
+     }
+     return [];
   }
   
   // Simple join handling using regex for common patterns
@@ -141,16 +308,26 @@ function handleSelect(query, params) {
     return handleWhereQuery(query, params, tableName);
   }
   
+  let results: any[] = [];
   // Default - return all records from the table
-  if (tableName && memoryDatabase[tableName]) {
-    return memoryDatabase[tableName].map(item => ({...item}));
+  // Handle case mismatch and mapping
+  const dbKey = Object.keys(memoryDatabase).find(k => k.toLowerCase() === tableName.toLowerCase());
+  if (dbKey && memoryDatabase[dbKey]) {
+    results = memoryDatabase[dbKey].map(item => ({...item}));
+  }
+
+  // Handle LIMIT
+  const limitMatch = query.match(/limit\s+(\d+)/i);
+  if (limitMatch) {
+    const limit = parseInt(limitMatch[1]);
+    results = results.slice(0, limit);
   }
   
-  return [];
+  return results;
 }
 
 // Handle INSERT queries
-function handleInsert(query, params) {
+function handleInsert(query: string, params: any[]): { insertId: number; affectedRows: number } {
   // Extract table name
   const tableMatch = query.match(/insert into (\w+)/i);
   if (!tableMatch || !tableMatch[1]) return { insertId: 0, affectedRows: 0 };
@@ -169,7 +346,7 @@ function handleInsert(query, params) {
     : tableName.toLowerCase() + '_id';
   
   // Create new record with ID
-  const newRecord = { [idField]: newId };
+  const newRecord: Record<string, any> = { [idField]: newId };
   
   // Extract column names from query
   const columnsMatch = query.match(/\(([^)]+)\) values/i);
@@ -177,7 +354,7 @@ function handleInsert(query, params) {
     const columns = columnsMatch[1].split(',').map(col => col.trim());
     
     // Assign values from params to corresponding columns
-    columns.forEach((col, index) => {
+    columns.forEach((col: string, index: number) => {
       if (index < params.length) {
         newRecord[col] = params[index];
       }
@@ -195,14 +372,14 @@ function handleInsert(query, params) {
   }
   
   // Add to the table
-  memoryDatabase[tableName].push(newRecord);
+  memoryDatabase[tableName].push(newRecord as any);
   
   // Return mysql-like result
   return { insertId: newId, affectedRows: 1 };
 }
 
 // Handle UPDATE queries
-function handleUpdate(query, params) {
+function handleUpdate(query: string, params: any[]): { affectedRows: number } {
   // Extract table name
   const tableMatch = query.match(/update (\w+) set/i);
   if (!tableMatch || !tableMatch[1]) return { affectedRows: 0 };
@@ -247,7 +424,7 @@ function handleUpdate(query, params) {
       const setParts = setMatch[1].split(',');
       let paramIndex = 0;
       
-      setParts.forEach(part => {
+      setParts.forEach((part: string) => {
         const fieldMatch = part.trim().match(/(\w+)\s*=\s*\?/);
         if (fieldMatch && paramIndex < params.length - 1) {
           const field = fieldMatch[1];
@@ -267,7 +444,7 @@ function handleUpdate(query, params) {
 }
 
 // Handle DELETE queries
-function handleDelete(query, params) {
+function handleDelete(query: string, params: any[]): { affectedRows: number } {
   // Extract table name
   const tableMatch = query.match(/delete from (\w+)/i);
   if (!tableMatch || !tableMatch[1]) return { affectedRows: 0 };
@@ -308,8 +485,19 @@ function handleDelete(query, params) {
   return { affectedRows: beforeCount - memoryDatabase[tableName].length };
 }
 
+// Define result type for JOIN queries
+interface OrderJoinResult {
+  order_id: number;
+  patient_name: string;
+  patient_id: number;
+  medicine_name: string;
+  order_date: string;
+  log_date?: string;
+  quantity: number;
+}
+
 // Handle more complex JOIN queries
-function handleJoinQuery(query, params) {
+function handleJoinQuery(query: string, params: any[]): any[] {
   // This is a simplified JOIN handler that works for the most common queries in MedInv
   // Extract main table and joined tables
   const fromMatch = query.match(/from\s+(\w+)/i);
@@ -324,24 +512,44 @@ function handleJoinQuery(query, params) {
       query.includes('join medicine')) {
     
     // Create joined results manually
-    const results = [];
+    const results: OrderJoinResult[] = [];
     
     // Process each order
     memoryDatabase.Orders.forEach(order => {
       // Find related patient
-      const patient = memoryDatabase.Patient.find(p => p.patient_id === order.patient_id) || {};
+      const patient = memoryDatabase.Patient.find(p => p.patient_id === order.patient_id) || {
+        patient_id: 0,
+        name: 'Unknown Patient',
+        email: '',
+        phone_number: '',
+        created_at: '',
+        updated_at: ''
+      };
       
       // Find related order items
       const orderItems = memoryDatabase.OrderItems.filter(oi => oi.order_id === order.order_id);
       
       // For each order item, create a result row with medicine details
       orderItems.forEach(item => {
-        const medicine = memoryDatabase.Medicine.find(m => m.medicine_id === item.medicine_id) || {};
+        const medicine = memoryDatabase.Medicine.find(m => m.medicine_id === item.medicine_id) || {
+          medicine_id: 0,
+          name: 'Unknown Medicine',
+          price: 0,
+          created_at: '',
+          updated_at: ''
+        };
         
         // Find optional medical log (LEFT JOIN)
         const medicalLog = memoryDatabase.MedicalLogs.find(
           ml => ml.patient_id === order.patient_id
-        ) || {};
+        ) || {
+          log_id: 0,
+          patient_id: 0,
+          medicine_id: 0,
+          log_date: '',
+          dosage: '',
+          created_at: ''
+        };
         
         results.push({
           order_id: order.order_id,
@@ -363,7 +571,7 @@ function handleJoinQuery(query, params) {
 }
 
 // Handle COUNT queries
-function handleCountQuery(query, params) {
+function handleCountQuery(query: string, params: any[]): Array<Record<string, number>> {
   const fromMatch = query.match(/from\s+(\w+)/i);
   if (!fromMatch) return [{ count: 0 }];
   
@@ -385,20 +593,34 @@ function handleCountQuery(query, params) {
       // Handle quantity < 10 condition for inventory
       if (condition.includes('quantity') && condition.includes('<')) {
         const threshold = parseInt(condition.split('<')[1].trim(), 10);
-        const count = memoryDatabase[tableName].filter(item => item.quantity < threshold).length;
+        const count = memoryDatabase[tableName].filter((item: any) => 
+          item.quantity !== undefined && item.quantity < threshold
+        ).length;
         return [{ [countField]: count }];
       }
       
       // Handle expiry_date between x and y
       if (condition.includes('expiry_date') && condition.includes('between')) {
-        // This is simplified and would need proper date handling in a real implementation
-        const count = memoryDatabase[tableName].filter(item => {
-          const expiryDate = new Date(item.expiry_date);
-          const today = new Date();
-          const futureDate = new Date();
-          futureDate.setDate(today.getDate() + 30);
+        // Improved date handling with error checking
+        const count = memoryDatabase[tableName].filter((item: any) => {
+          // Skip items with missing or invalid expiry dates
+          if (!item.expiry_date) return false;
           
-          return expiryDate >= today && expiryDate <= futureDate;
+          try {
+            const expiryDate = new Date(item.expiry_date);
+            
+            // Check if date is valid (invalid dates return NaN when converted to number)
+            if (isNaN(expiryDate.getTime())) return false;
+            
+            const today = new Date();
+            const futureDate = new Date();
+            futureDate.setDate(today.getDate() + 30);
+            
+            return expiryDate >= today && expiryDate <= futureDate;
+          } catch (error) {
+            console.error(`Invalid date format for expiry_date: ${item.expiry_date}`, error);
+            return false;
+          }
         }).length;
         
         return [{ [countField]: count }];
@@ -411,7 +633,7 @@ function handleCountQuery(query, params) {
 }
 
 // Handle SUM queries
-function handleSumQuery(query, params) {
+function handleSumQuery(query: string, params: any[]): Array<Record<string, number>> {
   // Extract the field being summed
   const sumMatch = query.match(/sum\((\w+)\)\s+as\s+(\w+)/i);
   if (!sumMatch) return [{ sum: 0 }];
@@ -448,7 +670,7 @@ function handleSumQuery(query, params) {
 }
 
 // Handle WHERE clause queries
-function handleWhereQuery(query, params, tableName) {
+function handleWhereQuery(query: string, params: any[], tableName: string): any[] {
   if (!memoryDatabase[tableName]) return [];
   
   const whereMatch = query.match(/where\s+(.+)$/i);
@@ -478,7 +700,21 @@ export function resetDemoDatabase() {
     OrderItems: [],
     Supplier: [],
     Employee: [],
-    MedicalLogs: []
+    MedicalLogs: [],
+    StaffAccount: [],
+    // Add missing tables from schema to avoid errors
+    DrugCategory: [],
+    medicinecategories: [],
+    Billing: [],
+    EmployeeAccounts: [],
+    Prescription: [],
+    PrescriptionItem: [],
+    Order: [],
+    OrderItem: [],
+    ExpiryAlert: [],
+    Discount: [],
+    Feedback: [],
+    MedicalLog: []
   };
   seedDemoData();
 }

@@ -45,7 +45,6 @@ import dbSchema from '@/context-db.json'; // Assuming context-db.json is in the 
 // Interface definitions (simplified)
 interface QueryResult {
   columns: string[];
-  rows: Record<string, any>[];
 }
 
 interface SavedQuery {
@@ -57,8 +56,7 @@ interface SavedQuery {
 
 // Extract table names and add placeholder counts based on image/context
 const databaseTables = Object.keys(dbSchema.tables).map(tableName => {
-  let count = 0; // Default count - All tables will show 0 initially
-  // Removed the hardcoded placeholder counts based on OCR
+  const count = 0; // Default count - All tables will show 0 initially
   return { name: tableName, count };
 });
 
@@ -104,9 +102,13 @@ export function DatabaseExplorer({ initialSelectedTable }: { initialSelectedTabl
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+
+  const validInitialTable = initialSelectedTable && databaseTables.some(t => t.name === initialSelectedTable)
+    ? initialSelectedTable
+    : databaseTables[0]?.name || "";
   
   // State
-  const [selectedTable, setSelectedTable] = useState<string>(initialSelectedTable || databaseTables[0]?.name || "");
+  const [selectedTable, setSelectedTable] = useState<string>(validInitialTable);
   const [tables, setTables] = useState(databaseTables); // Use data from JSON
   const [tableSearchTerm, setTableSearchTerm] = useState('');
   const [queryInput, setQueryInput] = useState('');
@@ -123,38 +125,6 @@ export function DatabaseExplorer({ initialSelectedTable }: { initialSelectedTabl
 
   // Refs
   const queryTextareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Set initial query when table changes
-  useEffect(() => {
-    if (selectedTable) {
-      const defaultQuery = `SELECT * FROM ${selectedTable} LIMIT ${resultsLimit};`;
-      setQueryInput(defaultQuery);
-      // Optionally auto-run the query for the selected table
-      // executeQueryWrapper(defaultQuery); 
-       // Update URL without reload
-      const params = new URLSearchParams(searchParams?.toString() || '');
-      params.set('table', selectedTable);
-      router.replace(`/database-explorer?${params.toString()}`, { scroll: false });
-    }
-  }, [selectedTable, resultsLimit, router, searchParams]); // Added dependencies
-
-  // Handle exit
-  const handleExit = () => {
-    router.back(); // Go back to the previous page
-  };
-
-  // Filter tables
-  const filteredTables = tables.filter(table => 
-    table.name.toLowerCase().includes(tableSearchTerm.toLowerCase())
-  );
-
-  // Handle table selection
-  const handleTableSelect = (tableName: string) => {
-    setSelectedTable(tableName);
-    setError(null);
-    setQueryResults(null); // Clear previous results
-    setQueryError(null);
-  };
 
   // Wrapper for executeQuery to handle state and errors
   const executeQueryWrapper = useCallback(async (queryToRun: string) => { // Added useCallback
@@ -179,6 +149,36 @@ export function DatabaseExplorer({ initialSelectedTable }: { initialSelectedTabl
       setIsExecutingQuery(false);
     }
   }, [toast]); // Added dependencies
+
+  // Set initial query when table changes
+  useEffect(() => {
+    if (selectedTable) {
+      const defaultQuery = `SELECT * FROM ${selectedTable} LIMIT ${resultsLimit};`;
+      setQueryInput(defaultQuery);
+      const params = new URLSearchParams(searchParams?.toString() || '');
+      params.set('table', selectedTable);
+      router.replace(`/database-explorer?${params.toString()}`, { scroll: false });
+      executeQueryWrapper(defaultQuery);
+    }
+  }, [selectedTable, resultsLimit, router, searchParams, executeQueryWrapper]);
+
+  // Handle exit
+  const handleExit = () => {
+    router.back(); // Go back to the previous page
+  };
+
+  // Filter tables
+  const filteredTables = tables.filter(table => 
+    table.name.toLowerCase().includes(tableSearchTerm.toLowerCase())
+  );
+
+  // Handle table selection
+  const handleTableSelect = (tableName: string) => {
+    setSelectedTable(tableName);
+    setError(null);
+    setQueryResults(null); // Clear previous results
+    setQueryError(null);
+  };
 
   // Execute button handler
   const handleExecuteClick = () => {

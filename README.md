@@ -38,6 +38,25 @@ MedInv can be deployed in three main configurations:
 
 The application automatically detects the environment and connects to the appropriate database based on environment variables.
 
+### Demo Mode
+
+Demo mode is ideal for:
+- Testing the application without setting up a database
+- Free-tier deployments
+- Showcasing the application to clients or users
+
+In demo mode:
+- All data is stored in memory and resets on page refresh
+- The application uses a predefined set of sample data
+- No database connection is required
+- Authentication is simplified for demonstration purposes
+
+To enable demo mode, set the following environment variables:
+```
+DEPLOYMENT_MODE=demo
+NEXT_PUBLIC_DEPLOYMENT_MODE=demo
+```
+
 ## Local Setup
 
 1. **Clone the repository**

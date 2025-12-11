@@ -1,8 +1,17 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase environment variables are missing");
+      return NextResponse.json({ error: "Supabase credentials not configured" }, { status: 500 });
+    }
+
+    const supabase = createServerSupabaseClient();
     const { medicineId } = await request.json();
 
     if (!medicineId) {

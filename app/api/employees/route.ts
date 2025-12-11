@@ -5,33 +5,52 @@ import { executeQuery } from '@/lib/mysql';
 interface EmployeeInfo {
   employee_id: number;
   name: string;
-  position: string | null;
-  department: string | null;
-  contact: string | null;
-  // Add other relevant fields if needed, e.g., status, email
+  role: string;
+  email: string;
+  phone_number: string | null;
+  hire_date: string | null;
 }
 
 export async function GET() {
   try {
-    // Adjust the query based on the actual columns in your Employee table
+    // First, let's check what columns actually exist in the Employee table
+    // This is a safer approach than guessing
+    const checkQuery = `SHOW COLUMNS FROM Employee`;
+    const columns = await executeQuery<any[]>(checkQuery);
+    const columnNames = columns.map(c => c.Field);
+    
+    // Build the query dynamically based on available columns
+    const hasHireDate = columnNames.includes('hire_date');
+    
     const query = `
       SELECT 
         employee_id, 
         name, 
-        position, 
-        department, 
-        contact
-        -- Add other columns like status, email here if they exist
+        role, 
+        email, 
+        phone_number
+        ${hasHireDate ? ', hire_date' : ''}
       FROM Employee 
       ORDER BY name ASC; 
     `;
-    const employeeData = await executeQuery<EmployeeInfo[]>(query);
+    
+    const employeeData = await executeQuery<any[]>(query);
 
     if (!employeeData || employeeData.length === 0) {
       return NextResponse.json([]); // Return empty array if no employees
     }
+    
+    // Map to the expected interface, handling missing fields
+    const mappedData: EmployeeInfo[] = employeeData.map(emp => ({
+      employee_id: emp.employee_id,
+      name: emp.name,
+      role: emp.role,
+      email: emp.email,
+      phone_number: emp.phone_number,
+      hire_date: hasHireDate ? emp.hire_date : null
+    }));
 
-    return NextResponse.json(employeeData);
+    return NextResponse.json(mappedData);
   } catch (error) {
     console.error('Error fetching employee data:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';

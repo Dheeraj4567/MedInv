@@ -131,6 +131,98 @@ export function RecentActivity() {
     router.push('/activity-logs');
   };
 
+  const renderActivityContent = (isLoading: boolean, error: string | null, activities: Activity[]) => {
+    if (isLoading) {
+      return (
+        <div className="space-y-3">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="flex items-center space-x-4">
+              <Skeleton className="h-9 w-9 rounded-full" />
+              <div className="space-y-2 flex-1">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-3 w-2/3" />
+              </div>
+              <Skeleton className="h-4 w-16" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    if (error) {
+      return (
+        <div className="text-center py-6 text-red-500">
+          <p>{error}</p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="mt-2"
+            onClick={() => fetchRecentActivity()}
+          >
+            Try Again
+          </Button>
+        </div>
+      );
+    }
+    
+    if (activities.length === 0) {
+      return (
+        <div className="text-center py-6 text-muted-foreground">
+          <p>No activity found</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="relative pr-2">
+        {activities.map((activity, index) => {
+          const Icon = getIcon(activity.type);
+          const isLast = index === activities.length - 1;
+          
+          return (
+            <div key={activity.id} className="flex gap-3 pb-6 last:pb-0 relative group">
+              {/* Vertical Line */}
+              {!isLast && (
+                <div className="absolute left-[15px] top-8 bottom-0 w-px bg-border/40" />
+              )}
+              
+              {/* Icon Bubble */}
+              <div className={cn(
+                "relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-card shadow-sm transition-colors group-hover:border-primary/30",
+                // Use text color for icon, border is default
+                activity.type === 'order' && "text-blue-500",
+                activity.type === 'inventory' && "text-emerald-500",
+                activity.type === 'expiry' && "text-red-500",
+                activity.type === 'supplier' && "text-amber-500",
+                activity.type === 'medicine' && "text-purple-500",
+                activity.type === 'patient' && "text-cyan-500",
+                activity.type === 'billing' && "text-indigo-500",
+                activity.type === 'info' && "text-slate-500"
+              )}>
+                <Icon className="h-4 w-4" />
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 pt-0.5 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-medium leading-none truncate text-foreground/90 group-hover:text-primary transition-colors">
+                    {activity.action}
+                  </p>
+                  <span className="text-[10px] text-muted-foreground whitespace-nowrap font-mono">
+                    {formatTimestamp(activity.timestamp)}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                  {activity.details}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <Card className="relative overflow-hidden border-border/40 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -205,104 +297,5 @@ export function RecentActivity() {
     </Card>
   );
   
-  function renderActivityContent(isLoading: boolean, error: string | null, activities: Activity[]) {
-    if (isLoading) {
-      return (
-        <div className="space-y-3">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="flex items-center space-x-4">
-              <Skeleton className="h-9 w-9 rounded-full" />
-              <div className="space-y-2 flex-1">
-                <Skeleton className="h-4 w-1/3" />
-                <Skeleton className="h-3 w-2/3" />
-              </div>
-              <Skeleton className="h-4 w-16" />
-            </div>
-          ))}
-        </div>
-      );
-    }
-    
-    if (error) {
-      return (
-        <div className="text-center py-6 text-red-500">
-          <p>{error}</p>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="mt-2"
-            onClick={() => fetchRecentActivity()}
-          >
-            Try Again
-          </Button>
-        </div>
-      );
-    }
-    
-    if (activities.length === 0) {
-      return (
-        <div className="text-center py-6 text-muted-foreground">
-          <p>No activity found</p>
-        </div>
-      );
-    }
-    
-    return (
-      <div className="space-y-1 -mx-2">
-        {activities.map((activity, index) => {
-          const Icon = getIcon(activity.type);
-          
-          return (
-            <motion.div
-              key={activity.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.2 }}
-            >
-              <div
-                className="group flex items-center space-x-3 rounded-md p-2 transition-all hover:bg-accent/50 cursor-pointer relative"
-                onClick={() => handleActivityClick(activity)}
-              >
-                <div className={cn(
-                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors",
-                  getIconBg(activity.type, activity.status)
-                )}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium leading-none">
-                      {activity.action}
-                    </p>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      {formatTimestamp(activity.timestamp)}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{activity.details}</p>
-                  <p className="text-xs text-muted-foreground/70">
-                    By: System
-                  </p>
-                </div>
-                
-                {/* Status indicator */}
-                {activity.status && (
-                  <div className={cn(
-                    "w-1 h-full rounded-full absolute left-0",
-                    activity.status === 'completed' && "bg-green-500",
-                    activity.status === 'pending' && "bg-blue-500",
-                    activity.status === 'warning' && "bg-amber-500",
-                    activity.status === 'error' && "bg-red-500"
-                  )} />
-                )}
-                
-                {/* Subtle hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity rounded-md" />
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-    );
-  }
+
 }

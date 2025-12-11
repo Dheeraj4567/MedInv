@@ -4,41 +4,43 @@
 
 @layer base {
   :root {
-    /* Golden Hue Medical Theme - Light */
-    --background: 40 30% 98%; /* Very light gold-tinted background */
-    --foreground: 35 25% 15%; /* Warm dark brown for text */
+    /* Refined Lighter Yellow/Cream Theme */
+    /* Background: A very light, warm yellowish-cream - Desaturated for cleaner look */
+    --background: 48 30% 98%; 
+    --foreground: 30 15% 20%; /* Warm dark gray */
     
-    --card: 36 25% 99%; /* Subtle cream for cards */
-    --card-foreground: 35 25% 15%;
+    /* Cards: Pure white for better contrast and professional look */
+    --card: 0 0% 100%; 
+    --card-foreground: 30 15% 20%;
     
-    --popover: 36 25% 99%;
-    --popover-foreground: 35 25% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 15% 20%;
     
-    /* Gold accent as primary color */
-    --primary: 43 85% 55%; 
-    --primary-foreground: 35 25% 15%;
+    /* Primary: A bright, soft, sunny yellow (lighter than gold) */
+    --primary: 48 90% 65%; 
+    --primary-foreground: 30 20% 15%; 
     
-    /* Secondary gold tone for accents */
-    --accent: 45 95% 60%; 
-    --accent-foreground: 30 15% 15%;
+    /* Accent: Very pale yellow for highlights */
+    --accent: 48 80% 96%; 
+    --accent-foreground: 30 20% 15%;
     
-    --secondary: 40 30% 94%;
-    --secondary-foreground: 35 25% 25%;
+    --secondary: 48 20% 96%;
+    --secondary-foreground: 30 15% 25%;
     
-    --muted: 40 25% 94%;
-    --muted-foreground: 35 20% 45%;
+    --muted: 48 10% 94%;
+    --muted-foreground: 30 10% 50%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
     
-    --border: 40 25% 85%;
-    --input: 40 25% 90%;
-    --ring: 43 85% 55%; /* Match primary */
+    --border: 48 20% 90%;
+    --input: 48 20% 92%;
+    --ring: 48 90% 65%; /* Match primary */
     
-    --radius: 0.75rem;
-    --hover-glow: rgba(230, 185, 70, 0.2);
-    --hover-glow-strong: rgba(230, 185, 70, 0.3);
-    --accent-glow: rgba(234, 179, 8, 0.25);
+    --radius: 0.5rem;
+    --hover-glow: rgba(253, 224, 71, 0.3); /* Lighter yellow glow */
+    --hover-glow-strong: rgba(253, 224, 71, 0.5);
+    --accent-glow: rgba(254, 240, 138, 0.4);
 
     --spacing-xs: 0.25rem; /* 4px */
     --spacing-sm: 0.5rem;  /* 8px */
@@ -48,42 +50,40 @@
   }
 
   .dark {
-    /* GitHub-inspired Dark Theme */
-    --background: 220 16% 13%; /* Very dark gray */
-    --foreground: 210 20% 95%; /* Light gray/white */
+    /* Modern charcoal + teal glow */
+    --background: 222 47% 8%;
+    --foreground: 210 40% 96%;
     
-    --card: 220 15% 18%; /* Slightly lighter dark gray */
-    --card-foreground: 210 20% 95%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 96%;
     
-    --popover: 220 15% 16%; /* Darker popover */
-    --popover-foreground: 210 20% 95%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 96%;
     
-    /* GitHub-like blue */
-    --primary: 212 92% 58%; 
-    --primary-foreground: 0 0% 100%;
+    /* Primary: teal/cyan accent for clarity */
+    --primary: 191 97% 55%;
+    --primary-foreground: 222 47% 8%;
     
-    /* Subtle gray accent */
-    --accent: 210 15% 45%; 
-    --accent-foreground: 210 20% 95%;
+    /* Accent: cool violet-blue for highlights */
+    --accent: 248 83% 70%;
+    --accent-foreground: 222 47% 8%;
     
-    --secondary: 220 14% 25%; /* Medium dark gray */
-    --secondary-foreground: 210 15% 85%;
+    --secondary: 215 27% 18%;
+    --secondary-foreground: 210 40% 92%;
     
-    --muted: 220 14% 20%; /* Darker muted gray */
-    --muted-foreground: 210 10% 65%; /* Medium gray */
+    --muted: 220 15% 22%;
+    --muted-foreground: 220 15% 70%;
     
-    /* GitHub-like red */
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 45%;
+    --destructive-foreground: 210 40% 96%;
     
-    --border: 220 13% 30%; /* Subtle border */
-    --input: 220 15% 22%; /* Input background */
-    --ring: 212 92% 58%; /* Match primary */
+    --border: 217 19% 22%;
+    --input: 217 19% 22%;
+    --ring: 191 97% 55%;
     
-    /* Adjusted glows */
-    --hover-glow: rgba(88, 166, 255, 0.15); /* Blue glow */
-    --hover-glow-strong: rgba(88, 166, 255, 0.25);
-    --accent-glow: rgba(139, 148, 158, 0.1); /* Gray accent glow */
+    --hover-glow: rgba(14, 165, 233, 0.16);
+    --hover-glow-strong: rgba(14, 165, 233, 0.28);
+    --accent-glow: rgba(129, 140, 248, 0.18);
   }
 }
 
@@ -165,41 +165,27 @@
 
 /* Enhanced glass effect for cards */
 .glass-card {
-  @apply relative rounded-xl border bg-card/90 backdrop-blur-lg transition-all;
-  box-shadow: 
-    0 4px 12px rgba(0,0,0,0.03),
-    0 1px 3px rgba(0,0,0,0.02),
-    inset 0 1px 0 rgba(255,255,255,0.25);
+  @apply relative rounded-xl border bg-card transition-all;
+  box-shadow: none;
 }
 
 .dark .glass-card {
-  box-shadow: 
-    0 4px 12px rgba(0,0,0,0.15),
-    0 1px 3px rgba(0,0,0,0.1),
-    inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: none;
 }
 
-/* Hoverable glass card */
+/* Flat hover variant */
 .glass-card-hover {
-  @apply glass-card transition-all duration-200;
+  @apply glass-card transition-all duration-150;
 }
 
 .glass-card-hover:hover {
-  @apply border-primary/20 bg-card/95;
-  box-shadow: 
-    0 12px 24px rgba(0,0,0,0.05),
-    0 4px 8px rgba(0,0,0,0.03),
-    0 0 0 1px rgba(var(--primary-rgb), 0.1),
-    inset 0 1px 0 rgba(255,255,255,0.3);
-  transform: translateY(-2px);
+  @apply border-border bg-card;
+  box-shadow: none;
+  transform: none;
 }
 
 .dark .glass-card-hover:hover {
-  box-shadow: 
-    0 12px 24px rgba(0,0,0,0.2),
-    0 4px 8px rgba(0,0,0,0.15),
-    0 0 0 1px rgba(var(--primary-rgb), 0.15),
-    inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: none;
 }
 
 /* Grid background with medical theme */

@@ -8,7 +8,7 @@ import { RecentActivity } from "@/components/recent-activity";
 import { OrdersOverview } from "@/components/orders-overview";
 import DataVisualization from "@/components/data-visualization";
 import { InventorySummary } from "@/components/inventory-summary";
-import { InventoryDistribution } from "@/components/inventory-distribution";
+import { InventoryDistribution } from "@/components/inventory-distribution-v3";
 import { AppHub } from "@/components/app-hub";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";

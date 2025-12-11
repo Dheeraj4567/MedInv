@@ -28,14 +28,14 @@ interface LowStockResult {
 // This will fetch actual inventory distribution data from the database
 async function getInventoryDistributionData() {
   try {
-    // Use the medicinecategories view which already joins Medicine and DrugCategory
+    // Use the medicineCategories table which has the drug_category_name column
     const categoriesQuery = `
       SELECT 
         mc.drug_category_name as name,
         COUNT(DISTINCT mc.medicine_id) as count,
         SUM(i.quantity) as total_quantity,
         SUM(i.quantity * m.price) as value
-      FROM medicinecategories mc
+      FROM medicineCategories mc
       JOIN Medicine m ON mc.medicine_id = m.medicine_id
       LEFT JOIN Inventory i ON m.medicine_id = i.medicine_id
       GROUP BY mc.drug_category_name
@@ -44,17 +44,17 @@ async function getInventoryDistributionData() {
     
     const categories = await executeQuery<CategoryResult[]>(categoriesQuery);
     
-    // Get supplier distribution - Using supplier name instead of location 
+    // Get location distribution
     const locationsQuery = `
       SELECT 
-        s.name as name, 
-        COUNT(i.inventory_number) as count,
+        i.location as name, 
+        COUNT(DISTINCT i.medicine_id) as count,
         SUM(i.quantity) as total_quantity,
         SUM(i.quantity * m.price) as value
       FROM Inventory i
-      JOIN Supplier s ON i.supplier_id = s.supplier_id
       JOIN Medicine m ON i.medicine_id = m.medicine_id
-      GROUP BY s.name
+      WHERE i.location IS NOT NULL AND i.location != ''
+      GROUP BY i.location
       ORDER BY count DESC
     `;
     

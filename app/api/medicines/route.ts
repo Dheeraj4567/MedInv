@@ -3,8 +3,9 @@ import { executeQuery } from '@/lib/mysql';
 
 export async function GET() {
   try {
+    // Map category_id to drug_category_id for frontend compatibility
     const medicines = await executeQuery<{ medicine_id: number; name: string; price: number; manufacturer: string; expiry_date: string; drug_category_id: number }[]>(
-      `SELECT medicine_id, name, price, manufacturer, expiry_date, drug_category_id FROM Medicine ORDER BY name ASC`
+      `SELECT medicine_id, name, price, manufacturer, expiry_date, category_id as drug_category_id FROM Medicine ORDER BY name ASC`
     );
     return NextResponse.json(medicines);
   } catch (error) {
@@ -44,8 +45,9 @@ export async function GET() {
      const nextId = maxIdResult[0]?.maxId ? maxIdResult[0].maxId + 1 : 1;
 
      // Step 2: Include the medicine_id in the INSERT query
+     // Map drug_category_id to category_id
      const query = `
-       INSERT INTO Medicine (medicine_id, name, price, manufacturer, expiry_date, drug_category_id)
+       INSERT INTO Medicine (medicine_id, name, price, manufacturer, expiry_date, category_id)
        VALUES (?, ?, ?, ?, ?, ?)
      `;
      

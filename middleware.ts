@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Define public paths that don't require authentication
-  const publicPaths = ['/login', '/api/auth/login', '/api/dashboard']; // Add other public paths/APIs if needed
+  const publicPaths = ['/login', '/api/auth/login', '/api/dashboard', '/database-explorer']; // Add other public paths/APIs if needed
 
   // Check if the current path is public
   if (publicPaths.some(path => pathname.startsWith(path)) || pathname === '/api/auth/login') {

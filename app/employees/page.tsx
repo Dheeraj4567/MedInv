@@ -15,9 +15,10 @@ import { AppLayout } from "@/components/app-layout"; // Import AppLayout
 interface EmployeeInfo {
   employee_id: number;
   name: string;
-  position: string | null;
-  department: string | null;
-  contact: string | null;
+  role: string;
+  email: string;
+  phone_number: string | null;
+  hire_date: string | null;
   // Placeholder for status
   status?: 'Active' | 'On Leave' | 'Terminated' | 'Unknown';
 }
@@ -39,7 +40,7 @@ const EmployeesPage = () => { // Changed to arrow function
           // Add placeholder status
           const processedData = data.map(item => ({
             ...item,
-            status: 'Unknown' as const // Placeholder status
+            status: 'Active' as const // Placeholder status, assume active for now
           }));
           setEmployees(processedData);
         } else {
@@ -96,9 +97,10 @@ const EmployeesPage = () => { // Changed to arrow function
                   <TableRow>
                     <TableHead className="w-[100px]">Employee ID</TableHead>
                     <TableHead>Name</TableHead>
-                    <TableHead>Position</TableHead>
-                    <TableHead>Department</TableHead>
-                    <TableHead>Contact</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Hire Date</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -107,9 +109,10 @@ const EmployeesPage = () => { // Changed to arrow function
                     <TableRow key={employee.employee_id}>
                       <TableCell className="font-medium">{employee.employee_id}</TableCell>
                       <TableCell>{employee.name}</TableCell>
-                      <TableCell>{employee.position || 'N/A'}</TableCell>
-                      <TableCell>{employee.department || 'N/A'}</TableCell>
-                      <TableCell>{employee.contact || 'N/A'}</TableCell>
+                      <TableCell>{employee.role}</TableCell>
+                      <TableCell>{employee.email}</TableCell>
+                      <TableCell>{employee.phone_number || 'N/A'}</TableCell>
+                      <TableCell>{employee.hire_date ? new Date(employee.hire_date).toLocaleDateString() : 'N/A'}</TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"

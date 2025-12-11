@@ -24,14 +24,14 @@ export function DashboardHeader({
   const showHeading = !hideTitleOnCollapsed || pathname !== '/';
   
   return (
-    <div className="flex items-center justify-between px-0">
+    <div className="flex items-center justify-between pb-6 border-b border-border/40 mb-6">
       {showHeading && (
-        <div className="grid gap-0">
-          <h1 className="text-2xl font-bold tracking-tight warm-text mb-1"> {/* Added mb-1 */}
+        <div className="grid gap-1">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             {heading}
           </h1>
           {text && (
-            <p className="text-muted-foreground mb-0"> {/* Removed bottom margin */}
+            <p className="text-muted-foreground text-sm">
               {text}
             </p>
           )}

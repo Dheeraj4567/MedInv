@@ -5,25 +5,27 @@ import { executeQuery } from '@/lib/mysql';
 interface FeedbackInfo {
   feedback_id: number;
   patient_id: number;
-  patient_name: string; // From Patient table
-  ratings: number | null; // Assuming ratings column exists
-  // Add other relevant fields if needed, e.g., comment, date, status
+  patient_name: string;
+  title: string;
+  description: string | null;
+  rating: number | null;
+  feedback_date: string;
 }
 
 export async function GET() {
   try {
-    // Adjust the query based on the actual columns in your Feedback table
     const query = `
       SELECT 
         f.feedback_id, 
         f.patient_id, 
         p.name AS patient_name, 
-        f.ratings
-        -- Add other columns like comment, date, status here if they exist
+        f.title,
+        f.description,
+        f.rating,
+        f.feedback_date
       FROM Feedback f
-      JOIN Patient p ON f.patient_id = p.patient_id
-      ORDER BY f.feedback_id DESC; 
-      -- Consider adding date ordering if a date column exists
+      LEFT JOIN Patient p ON f.patient_id = p.patient_id
+      ORDER BY f.feedback_date DESC; 
     `;
     const feedbackData = await executeQuery<FeedbackInfo[]>(query);
 
