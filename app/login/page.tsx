@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast"; 
 import { motion } from 'framer-motion';
 import { EyeIcon, EyeOffIcon, Lock, User, Activity, ShieldCheck } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -63,6 +64,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background relative overflow-hidden">
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       {/* Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 -left-4 w-72 h-72 bg-yellow-100/50 dark:bg-yellow-900/20 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
