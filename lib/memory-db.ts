@@ -460,6 +460,11 @@ function handleSelect(query: string, params: any[]): any[] {
      }
      return [];
   }
+
+  // Handle Average Order Value (Nested Query)
+  if (query.toLowerCase().includes('avg(order_total.total)')) {
+    return [{ average: 150.50 }];
+  }
   
   // Handle COUNT aggregation
   if (query.includes('count(*)')) {
@@ -760,6 +765,52 @@ function handleJoinQuery(query: string, params: any[]): any[] {
       { name: 'Shelf D2', count: 7, total_quantity: 210, value: 6300.00 }
     ];
   }
+
+  // Handle Analytics - Top Medicines
+  if (mainTable === 'OrderItems' && query.includes('group by m.medicine_id')) {
+    return [
+      { medicine_id: 1, name: 'Paracetamol', total_quantity_sold: 150 },
+      { medicine_id: 2, name: 'Amoxicillin', total_quantity_sold: 120 },
+      { medicine_id: 5, name: 'Metformin', total_quantity_sold: 90 },
+      { medicine_id: 4, name: 'Ibuprofen', total_quantity_sold: 85 },
+      { medicine_id: 6, name: 'Atorvastatin', total_quantity_sold: 60 }
+    ];
+  }
+
+  // Handle Analytics - Inventory Turnover (Monthly Sales)
+  if (mainTable === 'OrderItems' && query.includes('group by date_format(o.order_date')) {
+    return [
+      { month: '2025-01', total_quantity_sold: 320 },
+      { month: '2025-02', total_quantity_sold: 280 },
+      { month: '2025-03', total_quantity_sold: 350 },
+      { month: '2025-04', total_quantity_sold: 410 },
+      { month: '2025-05', total_quantity_sold: 390 },
+      { month: '2025-06', total_quantity_sold: 450 }
+    ];
+  }
+
+  // Handle Orders Overview - Monthly Data
+  if (mainTable === 'Orders' && query.includes('group by date_format(o.order_date')) {
+    return [
+      { name: 'Jan', orders: 45, revenue: 12500.00 },
+      { name: 'Feb', orders: 38, revenue: 10200.00 },
+      { name: 'Mar', orders: 52, revenue: 15800.00 },
+      { name: 'Apr', orders: 48, revenue: 14500.00 },
+      { name: 'May', orders: 60, revenue: 18900.00 },
+      { name: 'Jun', orders: 55, revenue: 16500.00 }
+    ];
+  }
+
+  // Handle Orders Overview - Average Value (Nested Query)
+  // Note: Nested queries are hard to match with regex on the main query string if passed directly
+  // But executeQuery passes the full string.
+  // The query starts with SELECT AVG... FROM (SELECT ... FROM Orders ...)
+  // So mainTable extraction might fail or be 'Orders' depending on regex.
+  // My regex: const fromMatch = query.match(/from\s+(\w+)/i);
+  // For "SELECT AVG(...) FROM (SELECT ...)", the first FROM is followed by "(".
+  // So mainTable might be undefined or match something else.
+  
+  // Let's handle it in the main executeMemoryQuery or add a specific check here if mainTable is null/weird
   
   // If we don't have a specific handler, return empty array
   return [];
