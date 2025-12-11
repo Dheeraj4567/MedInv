@@ -101,34 +101,6 @@ NEXT_PUBLIC_DEPLOYMENT_MODE=demo
 7. **Access the application**
    - Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Vercel Deployment (100% FREE)
-
-1. **Create a GitHub repository**
-   - Push your code to a GitHub repository
-
-2. **Create a PlanetScale database** (FREE TIER)
-   - Sign up for [PlanetScale](https://planetscale.com/) - no credit card required
-   - Create a new database selecting the "Hobby" (free) plan
-   - Create a connection string in the PlanetScale dashboard
-   - Import the schema from `db-schema.md` using the PlanetScale console or CLI
-
-3. **Deploy to Vercel** (FREE TIER)
-   - Sign up for [Vercel](https://vercel.com) - no credit card required
-   - Create a new project and connect to your GitHub repository
-   - Make sure the "Hobby" (free) plan is selected
-   - Configure the following environment variables in Vercel's dashboard:
-     ```
-     DEPLOYMENT_MODE=planetscale
-     DATABASE_URL=mysql://username:password@region.connect.psdb.cloud/database_name?ssl={"rejectUnauthorized":true}
-     ```
-
-4. **Deploy the application**
-   - Click "Deploy" in the Vercel dashboard
-   - Wait for the build and deployment to complete
-
-5. **Access your deployed application**
-   - Use the URL provided by Vercel
-
 ## Database Configuration
 
 The application is designed to work with local MySQL, cloud database providers like PlanetScale, or in a database-free demo mode. The database connection is managed through the `lib/mysql.ts` file, which determines the connection method based on environment variables.
