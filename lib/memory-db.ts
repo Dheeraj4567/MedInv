@@ -676,6 +676,16 @@ function handleSelect(query: string, params: any[]): any[] {
   if (query.toLowerCase().includes('avg(order_total.total)')) {
     return [{ average: 150.50 }];
   }
+
+  // PRIORITIZE COMPLEX QUERIES (JOIN/GROUP BY)
+  // This ensures that analytics queries are handled by handleJoinQuery
+  // instead of falling through to handleSumQuery which rejects GROUP BY
+  if (query.includes('join') || query.includes('group by')) {
+    const joinResult = handleJoinQuery(query, params);
+    if (joinResult && joinResult.length > 0) {
+      return joinResult;
+    }
+  }
   
   // Handle COUNT aggregation
   if (query.includes('count(*)')) {
@@ -688,6 +698,7 @@ function handleSelect(query: string, params: any[]): any[] {
   }
 
   // Simple join handling using regex for common patterns
+  // (Fallback if not caught above)
   if (query.includes('join')) {
     return handleJoinQuery(query, params);
   }
@@ -892,10 +903,10 @@ function handleJoinQuery(query: string, params: any[]): any[] {
   const fromMatch = query.match(/from\s+(\w+)/i);
   if (!fromMatch) return [];
   
-  const mainTable = fromMatch[1];
+  const mainTable = fromMatch[1].toLowerCase();
   
   // For orders page JOIN example:
-  if (mainTable === 'Orders' && 
+  if (mainTable === 'orders' && 
       query.includes('join patient') && 
       query.includes('join orderitems') && 
       query.includes('join medicine')) {
@@ -956,7 +967,7 @@ function handleJoinQuery(query: string, params: any[]): any[] {
   }
 
   // Handle Inventory Distribution - Categories
-  if (mainTable === 'medicineCategories' && query.includes('group by mc.drug_category_name')) {
+  if (mainTable === 'medicinecategories' && query.includes('group by mc.drug_category_name')) {
     return [
       { name: 'Analgesics', count: 15, total_quantity: 450, value: 4500.00 },
       { name: 'Antibiotics', count: 12, total_quantity: 320, value: 6400.00 },
@@ -967,7 +978,7 @@ function handleJoinQuery(query: string, params: any[]): any[] {
   }
 
   // Handle Inventory Distribution - Locations
-  if (mainTable === 'Inventory' && query.includes('group by i.location')) {
+  if (mainTable === 'inventory' && query.includes('group by i.location')) {
     return [
       { name: 'Shelf A1', count: 5, total_quantity: 150, value: 2250.00 },
       { name: 'Shelf B2', count: 4, total_quantity: 120, value: 2400.00 },
@@ -978,7 +989,7 @@ function handleJoinQuery(query: string, params: any[]): any[] {
   }
 
   // Handle Analytics - Top Medicines
-  if (mainTable === 'OrderItems' && query.includes('group by m.medicine_id')) {
+  if (mainTable === 'orderitems' && query.includes('group by m.medicine_id')) {
     return [
       { medicine_id: 1, name: 'Paracetamol', total_quantity_sold: 150 },
       { medicine_id: 2, name: 'Amoxicillin', total_quantity_sold: 120 },
@@ -989,7 +1000,7 @@ function handleJoinQuery(query: string, params: any[]): any[] {
   }
 
   // Handle Analytics - Inventory Turnover (Monthly Sales)
-  if (mainTable === 'OrderItems' && query.includes('group by date_format(o.order_date')) {
+  if (mainTable === 'orderitems' && query.includes('group by date_format(o.order_date')) {
     return [
       { month: '2025-01', total_quantity_sold: 320 },
       { month: '2025-02', total_quantity_sold: 280 },
@@ -1001,7 +1012,7 @@ function handleJoinQuery(query: string, params: any[]): any[] {
   }
 
   // Handle Orders Overview - Monthly Data
-  if (mainTable === 'Orders' && query.includes('group by date_format(o.order_date')) {
+  if (mainTable === 'orders' && query.includes('group by date_format(o.order_date')) {
     return [
       { name: 'Jan', orders: 45, revenue: 12500.00 },
       { name: 'Feb', orders: 38, revenue: 10200.00 },
@@ -1034,8 +1045,11 @@ function handleCountQuery(query: string, params: any[]): Array<Record<string, nu
   
   const tableName = fromMatch[1];
   
-  // Check if the table exists
-  if (!memoryDatabase[tableName]) return [{ 'COUNT(*)': 0 }];
+  // Check if the table exists (case-insensitive)
+  const dbKey = Object.keys(memoryDatabase).find(k => k.toLowerCase() === tableName.toLowerCase());
+  if (!dbKey || !memoryDatabase[dbKey]) return [{ 'COUNT(*)': 0 }];
+  
+  const tableData = memoryDatabase[dbKey];
   
   // Extract field name for count result
   const countAsMatch = query.match(/count\(\*\)\s+as\s+(\w+)/i);
@@ -1051,7 +1065,7 @@ function handleCountQuery(query: string, params: any[]): Array<Record<string, nu
       // Handle quantity < 10 condition for inventory
       if (condition.includes('quantity') && condition.includes('<')) {
         const threshold = parseInt(condition.split('<')[1].trim(), 10);
-        const count = memoryDatabase[tableName].filter((item: any) => 
+        const count = tableData.filter((item: any) => 
           item.quantity !== undefined && item.quantity < threshold
         ).length;
         return [{ [countField]: count }];
@@ -1060,7 +1074,7 @@ function handleCountQuery(query: string, params: any[]): Array<Record<string, nu
       // Handle expiry_date between x and y
       if (condition.includes('expiry_date') && condition.includes('between')) {
         // Improved date handling with error checking
-        const count = memoryDatabase[tableName].filter((item: any) => {
+        const count = tableData.filter((item: any) => {
           // Skip items with missing or invalid expiry dates
           if (!item.expiry_date) return false;
           
@@ -1093,13 +1107,15 @@ function handleCountQuery(query: string, params: any[]): Array<Record<string, nu
   }
   
   // Default - count all records
-  return [{ [countField]: memoryDatabase[tableName].length }];
+  return [{ [countField]: tableData.length }];
 }
 
 // Handle SUM queries
 function handleSumQuery(query: string, params: any[]): Array<Record<string, number>> {
+  const lowerQuery = query.toLowerCase();
+  
   // Only handle simple SUM queries, not complex ones with GROUP BY or multiple columns
-  if (query.includes('group by') || query.includes(',')) {
+  if (lowerQuery.includes('group by') || lowerQuery.includes(',')) {
     return []; // Let it fall through to other handlers or return empty
   }
 
@@ -1112,7 +1128,7 @@ function handleSumQuery(query: string, params: any[]): Array<Record<string, numb
   const sumExpression = sumMatch ? sumMatch[1].toLowerCase() : '';
   
   // Handle inventory total items query: SUM(quantity)
-  if (query.includes('from inventory') && (sumExpression === 'quantity' || sumExpression.includes('quantity'))) {
+  if (lowerQuery.includes('from inventory') && (sumExpression === 'quantity' || sumExpression.includes('quantity'))) {
     // Check if it's just quantity or quantity * price
     if (sumExpression.includes('price')) {
        // Calculate total value: quantity * price
@@ -1132,7 +1148,7 @@ function handleSumQuery(query: string, params: any[]): Array<Record<string, numb
   }
   
   // Handle orders revenue: SUM(oi.quantity * m.price)
-  if (query.includes('from orders') || query.includes('from orderitems')) {
+  if (lowerQuery.includes('from orders') || lowerQuery.includes('from orderitems')) {
      if (sumExpression.includes('price') && sumExpression.includes('quantity')) {
         let totalRevenue = 0;
         memoryDatabase.OrderItems.forEach(item => {
