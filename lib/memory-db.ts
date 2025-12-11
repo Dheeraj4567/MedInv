@@ -123,7 +123,23 @@ let memoryDatabase: MemoryDatabaseSchema = {
   ExpiryAlert: [],
   Discount: [],
   Feedback: [],
-  MedicalLog: [] // Alias for MedicalLogs
+  MedicalLog: [], // Alias for MedicalLogs
+  ActivityLog: [],
+  AnalyticsData: [],
+  Settings: [],
+  BillingItem: [],
+  PatientMedication: [],
+  PatientAppointment: [],
+  InventoryLog: [],
+  StockAlert: [],
+  SupplierContact: [],
+  PaymentTransaction: [],
+  Insurance: [],
+  DashboardWidget: [],
+  NotificationSettings: [],
+  Notification: [],
+  Report: [],
+  ApiKey: []
 };
 
 // Pre-populated data
@@ -131,56 +147,213 @@ const seedDemoData = () => {
   // Pre-populated staff accounts for login
   memoryDatabase.StaffAccount = [
     { username: 'admin', password: 'admin123', employee_id: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { username: 'nurse', password: 'nurse123', employee_id: 2, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { username: 'nurse', password: 'nurse123', employee_id: 2, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { username: 'pharmacist', password: 'pharm123', employee_id: 3, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
   
   // Pre-populated patients
   memoryDatabase.Patient = [
     { patient_id: 1, name: 'John Doe', email: 'john.doe@example.com', phone_number: '1234567890', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { patient_id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', phone_number: '9876543210', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { patient_id: 3, name: 'Rajesh Kumar', email: 'rajesh@example.com', phone_number: '9876543210', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { patient_id: 3, name: 'Rajesh Kumar', email: 'rajesh@example.com', phone_number: '9876543211', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 4, name: 'Emily Davis', email: 'emily.d@example.com', phone_number: '5551234567', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { patient_id: 5, name: 'Michael Brown', email: 'm.brown@example.com', phone_number: '5559876543', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated suppliers
   memoryDatabase.Supplier = [
     { supplier_id: 1, name: 'MediSupply Inc.', email: 'contact@medisupply.com', phone_number: '1122334455', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { supplier_id: 2, name: 'PharmaWholesale', email: 'info@pharmawholesale.com', phone_number: '5566778899', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { supplier_id: 2, name: 'PharmaWholesale', email: 'info@pharmawholesale.com', phone_number: '5566778899', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { supplier_id: 3, name: 'Global Health Distributors', email: 'sales@globalhealth.com', phone_number: '9988776655', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated employees
   memoryDatabase.Employee = [
     { employee_id: 1, name: 'Dr. Mike Johnson', email: 'mike.johnson@hospital.com', phone_number: '1231231234', role: 'Doctor', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { employee_id: 2, name: 'Nurse Sarah Williams', email: 'sarah.williams@hospital.com', phone_number: '4564564567', role: 'Nurse', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { employee_id: 2, name: 'Nurse Sarah Williams', email: 'sarah.williams@hospital.com', phone_number: '4564564567', role: 'Nurse', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { employee_id: 3, name: 'David Chen', email: 'david.chen@hospital.com', phone_number: '7897897890', role: 'Pharmacist', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated medicines
   memoryDatabase.Medicine = [
     { medicine_id: 1, name: 'Paracetamol', description: 'Pain reliever and fever reducer', price: 9.99, unit: 'bottle', expiry_date: '2025-12-31', manufacturer: 'MediCorp', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { medicine_id: 2, name: 'Amoxicillin', description: 'Antibiotic medication', price: 19.99, unit: 'pack', expiry_date: '2025-06-30', manufacturer: 'PharmaCorp', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { medicine_id: 3, name: 'Loratadine', description: 'Antihistamine for allergies', price: 15.50, unit: 'box', expiry_date: '2026-01-15', manufacturer: 'AllergyMeds Inc.', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    { medicine_id: 3, name: 'Loratadine', description: 'Antihistamine for allergies', price: 15.50, unit: 'box', expiry_date: '2026-01-15', manufacturer: 'AllergyMeds Inc.', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 4, name: 'Ibuprofen', description: 'Nonsteroidal anti-inflammatory drug', price: 12.99, unit: 'bottle', expiry_date: '2025-11-20', manufacturer: 'MediCorp', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 5, name: 'Metformin', description: 'Diabetes medication', price: 25.00, unit: 'pack', expiry_date: '2026-03-10', manufacturer: 'DiabetCare', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { medicine_id: 6, name: 'Atorvastatin', description: 'Cholesterol lowering medication', price: 30.00, unit: 'pack', expiry_date: '2025-09-15', manufacturer: 'HeartHealth', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
   ];
 
   // Pre-populated inventory
   memoryDatabase.Inventory = [
     { inventory_id: 1, medicine_id: 1, quantity: 100, location: 'Shelf A1', last_updated: new Date().toISOString() },
     { inventory_id: 2, medicine_id: 2, quantity: 50, location: 'Shelf B2', last_updated: new Date().toISOString() },
-    { inventory_id: 3, medicine_id: 3, quantity: 75, location: 'Shelf C3', last_updated: new Date().toISOString() }
+    { inventory_id: 3, medicine_id: 3, quantity: 75, location: 'Shelf C3', last_updated: new Date().toISOString() },
+    { inventory_id: 4, medicine_id: 4, quantity: 120, location: 'Shelf A2', last_updated: new Date().toISOString() },
+    { inventory_id: 5, medicine_id: 5, quantity: 200, location: 'Shelf D1', last_updated: new Date().toISOString() },
+    { inventory_id: 6, medicine_id: 6, quantity: 150, location: 'Shelf D2', last_updated: new Date().toISOString() }
   ];
 
   // Pre-populated orders
   memoryDatabase.Orders = [
-    { order_id: 1, patient_id: 1, supplier_id: 1, employee_id: 1, order_date: '2025-05-15', created_at: new Date().toISOString() }
+    { order_id: 1, patient_id: 1, supplier_id: 1, employee_id: 1, order_date: '2025-05-15', created_at: new Date().toISOString() },
+    { order_id: 2, patient_id: 2, supplier_id: 2, employee_id: 2, order_date: '2025-05-18', created_at: new Date().toISOString() },
+    { order_id: 3, patient_id: 3, supplier_id: 1, employee_id: 3, order_date: '2025-05-20', created_at: new Date().toISOString() }
   ];
 
   // Pre-populated order items
   memoryDatabase.OrderItems = [
-    { order_id: 1, medicine_id: 1, quantity: 2 }
+    { order_id: 1, medicine_id: 1, quantity: 2 },
+    { order_id: 1, medicine_id: 4, quantity: 1 },
+    { order_id: 2, medicine_id: 2, quantity: 1 },
+    { order_id: 3, medicine_id: 5, quantity: 3 }
   ];
 
   // Pre-populated medical logs
   memoryDatabase.MedicalLogs = [
     { log_id: 1, patient_id: 1, medicine_id: 1, log_date: '2025-05-15', dosage: '1 tablet every 6 hours', notes: 'Patient reported headache relief after first dose', created_at: new Date().toISOString() },
-    { log_id: 2, patient_id: 2, medicine_id: 2, log_date: '2025-05-16', dosage: '1 capsule twice daily', notes: 'Treating respiratory infection', created_at: new Date().toISOString() }
+    { log_id: 2, patient_id: 2, medicine_id: 2, log_date: '2025-05-16', dosage: '1 capsule twice daily', notes: 'Treating respiratory infection', created_at: new Date().toISOString() },
+    { log_id: 3, patient_id: 3, medicine_id: 5, log_date: '2025-05-20', dosage: '500mg with meals', notes: 'Routine checkup for diabetes management', created_at: new Date().toISOString() }
+  ];
+
+  // Pre-populated prescriptions
+  memoryDatabase.Prescription = [
+    { prescription_id: 1, patient_id: 1, employee_id: 1, date: '2025-05-15', notes: 'Take with food' },
+    { prescription_id: 2, patient_id: 2, employee_id: 1, date: '2025-05-16', notes: 'Complete full course' },
+    { prescription_id: 3, patient_id: 3, employee_id: 1, date: '2025-05-20', notes: 'Monitor blood sugar levels' }
+  ];
+
+  // Pre-populated prescription items
+  memoryDatabase.PrescriptionItem = [
+    { item_id: 1, prescription_id: 1, medicine_id: 1, dosage: '500mg', frequency: 'Every 6 hours', duration: '5 days' },
+    { item_id: 2, prescription_id: 2, medicine_id: 2, dosage: '250mg', frequency: 'Twice daily', duration: '7 days' },
+    { item_id: 3, prescription_id: 3, medicine_id: 5, dosage: '500mg', frequency: 'Once daily', duration: '30 days' }
+  ];
+
+  // Pre-populated billing
+  memoryDatabase.Billing = [
+    { billing_id: 1, patient_id: 1, date: '2025-05-15', amount: 32.97, status: 'Paid' },
+    { billing_id: 2, patient_id: 2, date: '2025-05-16', amount: 19.99, status: 'Pending' },
+    { billing_id: 3, patient_id: 3, date: '2025-05-20', amount: 75.00, status: 'Paid' }
+  ];
+
+  // Pre-populated activity logs
+  memoryDatabase.ActivityLog = [
+    { id: 1, action: 'LOGIN', details: 'User admin logged in', type: 'AUTH', timestamp: new Date().toISOString(), user_name: 'admin' },
+    { id: 2, action: 'UPDATE_INVENTORY', details: 'Updated stock for Paracetamol', type: 'INVENTORY', timestamp: new Date(Date.now() - 86400000).toISOString(), user_name: 'admin' },
+    { id: 3, action: 'CREATE_PRESCRIPTION', details: 'Created prescription for John Doe', type: 'CLINICAL', timestamp: new Date(Date.now() - 172800000).toISOString(), user_name: 'Dr. Mike Johnson' }
+  ];
+  
+  // Alias mapping for compatibility
+  memoryDatabase.Order = memoryDatabase.Orders;
+  memoryDatabase.OrderItem = memoryDatabase.OrderItems;
+  memoryDatabase.MedicalLog = memoryDatabase.MedicalLogs;
+
+  // Pre-populated drug categories
+  memoryDatabase.DrugCategory = [
+    { category_id: 1, name: 'Analgesics', description: 'Pain relievers' },
+    { category_id: 2, name: 'Antibiotics', description: 'Treat bacterial infections' },
+    { category_id: 3, name: 'Antihistamines', description: 'Treat allergies' },
+    { category_id: 4, name: 'Antidiabetics', description: 'Treat diabetes' },
+    { category_id: 5, name: 'Cardiovascular', description: 'Heart and blood vessel medications' }
+  ];
+  memoryDatabase.medicinecategories = memoryDatabase.DrugCategory;
+
+  // Pre-populated feedback
+  memoryDatabase.Feedback = [
+    { feedback_id: 1, user_id: 1, message: 'Great system, very easy to use!', rating: 5, created_at: new Date().toISOString() },
+    { feedback_id: 2, user_id: 2, message: 'Would like to see more detailed reports.', rating: 4, created_at: new Date().toISOString() }
+  ];
+
+  // Pre-populated expiry alerts
+  memoryDatabase.ExpiryAlert = [
+    { alert_id: 1, medicine_id: 2, alert_date: '2025-06-01', message: 'Amoxicillin expiring soon', status: 'Active' },
+    { alert_id: 2, medicine_id: 6, alert_date: '2025-08-15', message: 'Atorvastatin expiring in 30 days', status: 'Active' }
+  ];
+
+  // Pre-populated discounts
+  memoryDatabase.Discount = [
+    { discount_id: 1, code: 'SUMMER10', percentage: 10, valid_until: '2025-08-31' },
+    { discount_id: 2, code: 'SENIOR20', percentage: 20, valid_until: '2025-12-31' }
+  ];
+
+  // Pre-populated analytics data
+  memoryDatabase.AnalyticsData = [
+    { data_id: 1, data_type: 'daily_sales', data_value: JSON.stringify({ date: '2025-05-15', total: 1500.50 }), timestamp: new Date().toISOString() },
+    { data_id: 2, data_type: 'patient_visits', data_value: JSON.stringify({ date: '2025-05-15', count: 45 }), timestamp: new Date().toISOString() }
+  ];
+
+  // Pre-populated settings
+  memoryDatabase.Settings = [
+    { setting_id: 1, setting_name: 'theme', setting_value: 'dark', setting_group: 'appearance' },
+    { setting_id: 2, setting_name: 'currency', setting_value: 'USD', setting_group: 'general' }
+  ];
+
+  // Pre-populated billing items
+  memoryDatabase.BillingItem = [
+    { item_id: 1, billing_id: 1, description: 'Consultation Fee', quantity: 1, unit_price: 50.00, total_price: 50.00 },
+    { item_id: 2, billing_id: 1, description: 'Paracetamol', quantity: 2, unit_price: 9.99, total_price: 19.98 }
+  ];
+
+  // Pre-populated patient medications
+  memoryDatabase.PatientMedication = [
+    { medication_id: 1, patient_id: 1, medicine_id: 1, start_date: '2025-01-01', end_date: '2025-12-31', dosage: '500mg', notes: 'Take with food' }
+  ];
+
+  // Pre-populated patient appointments
+  memoryDatabase.PatientAppointment = [
+    { appointment_id: 1, patient_id: 1, employee_id: 1, appointment_date: '2025-06-01T10:00:00Z', purpose: 'General Checkup', status: 'Scheduled' },
+    { appointment_id: 2, patient_id: 2, employee_id: 1, appointment_date: '2025-06-02T14:00:00Z', purpose: 'Follow-up', status: 'Scheduled' }
+  ];
+
+  // Pre-populated inventory logs
+  memoryDatabase.InventoryLog = [
+    { log_id: 1, inventory_number: 1, action: 'RESTOCK', quantity_change: 50, timestamp: new Date().toISOString(), employee_id: 1, notes: 'Monthly restock' }
+  ];
+
+  // Pre-populated stock alerts
+  memoryDatabase.StockAlert = [
+    { alert_id: 1, medicine_id: 2, threshold: 20, status: 'Active', last_triggered: new Date().toISOString() }
+  ];
+
+  // Pre-populated supplier contacts
+  memoryDatabase.SupplierContact = [
+    { contact_id: 1, supplier_id: 1, name: 'Alice Supplier', position: 'Sales Manager', email: 'alice@medisupply.com', phone: '123-456-7890' }
+  ];
+
+  // Pre-populated payment transactions
+  memoryDatabase.PaymentTransaction = [
+    { transaction_id: 1, billing_id: 1, amount: 69.98, payment_date: new Date().toISOString(), payment_method: 'Credit Card', status: 'Completed' }
+  ];
+
+  // Pre-populated insurance
+  memoryDatabase.Insurance = [
+    { insurance_id: 1, patient_id: 1, provider: 'HealthGuard', policy_number: 'HG123456789', coverage_details: 'Full coverage', expiry_date: '2026-01-01' }
+  ];
+
+  // Pre-populated dashboard widgets
+  memoryDatabase.DashboardWidget = [
+    { widget_id: 1, title: 'Sales Overview', widget_type: 'chart', data_source: 'sales_api', configuration: JSON.stringify({ type: 'bar' }), position: 1 }
+  ];
+
+  // Pre-populated notification settings
+  memoryDatabase.NotificationSettings = [
+    { setting_id: 1, employee_id: 1, notification_type: 'email', is_enabled: true, delivery_method: 'instant' }
+  ];
+
+  // Pre-populated notifications
+  memoryDatabase.Notification = [
+    { notification_id: 1, employee_id: 1, message: 'New stock alert', type: 'alert', is_read: false, created_at: new Date().toISOString() }
+  ];
+
+  // Pre-populated reports
+  memoryDatabase.Report = [
+    { report_id: 1, report_name: 'Monthly Sales', report_type: 'financial', parameters: JSON.stringify({ month: 'May' }), created_by: 1, created_at: new Date().toISOString(), last_run: new Date().toISOString() }
+  ];
+
+  // Pre-populated API keys
+  memoryDatabase.ApiKey = [
+    { key_id: 1, api_key: 'demo-api-key-123', created_by: 1, created_at: new Date().toISOString(), expires_at: '2026-01-01T00:00:00Z', permissions: JSON.stringify(['read', 'write']), is_active: true }
   ];
 };
 
@@ -288,11 +461,6 @@ function handleSelect(query: string, params: any[]): any[] {
      return [];
   }
   
-  // Simple join handling using regex for common patterns
-  if (query.includes('join')) {
-    return handleJoinQuery(query, params);
-  }
-  
   // Handle COUNT aggregation
   if (query.includes('count(*)')) {
     return handleCountQuery(query, params);
@@ -301,6 +469,11 @@ function handleSelect(query: string, params: any[]): any[] {
   // Handle SUM aggregation
   if (query.includes('sum(')) {
     return handleSumQuery(query, params);
+  }
+
+  // Simple join handling using regex for common patterns
+  if (query.includes('join')) {
+    return handleJoinQuery(query, params);
   }
   
   // Simple where clause handling
@@ -573,16 +746,17 @@ function handleJoinQuery(query: string, params: any[]): any[] {
 // Handle COUNT queries
 function handleCountQuery(query: string, params: any[]): Array<Record<string, number>> {
   const fromMatch = query.match(/from\s+(\w+)/i);
-  if (!fromMatch) return [{ count: 0 }];
+  if (!fromMatch) return [{ 'COUNT(*)': 0 }];
   
   const tableName = fromMatch[1];
   
   // Check if the table exists
-  if (!memoryDatabase[tableName]) return [{ count: 0 }];
+  if (!memoryDatabase[tableName]) return [{ 'COUNT(*)': 0 }];
   
   // Extract field name for count result
   const countAsMatch = query.match(/count\(\*\)\s+as\s+(\w+)/i);
-  const countField = countAsMatch ? countAsMatch[1] : 'count';
+  // Default to 'COUNT(*)' to match MySQL behavior when no alias is provided
+  const countField = countAsMatch ? countAsMatch[1] : 'COUNT(*)';
   
   // Extract where condition if present
   if (query.includes('where')) {
@@ -613,8 +787,14 @@ function handleCountQuery(query: string, params: any[]): Array<Record<string, nu
             if (isNaN(expiryDate.getTime())) return false;
             
             const today = new Date();
+            
+            // Determine the interval from the query if possible, otherwise default to 90 days (common case)
+            let daysToAdd = 90;
+            if (condition.includes('interval 30 day')) daysToAdd = 30;
+            if (condition.includes('interval 60 day')) daysToAdd = 60;
+            
             const futureDate = new Date();
-            futureDate.setDate(today.getDate() + 30);
+            futureDate.setDate(today.getDate() + daysToAdd);
             
             return expiryDate >= today && expiryDate <= futureDate;
           } catch (error) {
@@ -634,36 +814,51 @@ function handleCountQuery(query: string, params: any[]): Array<Record<string, nu
 
 // Handle SUM queries
 function handleSumQuery(query: string, params: any[]): Array<Record<string, number>> {
-  // Extract the field being summed
-  const sumMatch = query.match(/sum\((\w+)\)\s+as\s+(\w+)/i);
-  if (!sumMatch) return [{ sum: 0 }];
+  // Extract the field being summed - improved regex to handle expressions
+  // Matches SUM(...) AS alias
+  const sumMatch = query.match(/sum\((.*?)\)\s+as\s+(\w+)/i);
   
-  const sumField = sumMatch[1];
-  const resultField = sumMatch[2];
+  // Default result field if not found
+  const resultField = sumMatch ? sumMatch[2] : 'sum';
+  const sumExpression = sumMatch ? sumMatch[1].toLowerCase() : '';
   
-  // Handle inventory total items query
-  if (query.includes('from inventory') && sumField === 'quantity') {
-    const sum = memoryDatabase.Inventory.reduce((total, item) => total + item.quantity, 0);
-    return [{ [resultField]: sum }];
+  // Handle inventory total items query: SUM(quantity)
+  if (query.includes('from inventory') && (sumExpression === 'quantity' || sumExpression.includes('quantity'))) {
+    // Check if it's just quantity or quantity * price
+    if (sumExpression.includes('price')) {
+       // Calculate total value: quantity * price
+       let totalValue = 0;
+       memoryDatabase.Inventory.forEach(invItem => {
+         const medicine = memoryDatabase.Medicine.find(m => m.medicine_id === invItem.medicine_id);
+         if (medicine) {
+           totalValue += invItem.quantity * (medicine.price || 0);
+         }
+       });
+       return [{ [resultField]: totalValue }];
+    } else {
+       // Just quantity
+       const sum = memoryDatabase.Inventory.reduce((total, item) => total + item.quantity, 0);
+       return [{ [resultField]: sum }];
+    }
   }
   
-  // Handle total value calculation with join
-  if (query.includes('from inventory') && 
-      query.includes('join medicine') && 
-      query.includes('quantity') && 
-      query.includes('price')) {
-    
-    // Calculate total value
-    let totalValue = 0;
-    
-    memoryDatabase.Inventory.forEach(invItem => {
-      const medicine = memoryDatabase.Medicine.find(m => m.medicine_id === invItem.medicine_id);
-      if (medicine) {
-        totalValue += invItem.quantity * (medicine.price || 0);
-      }
-    });
-    
-    return [{ [resultField]: totalValue }];
+  // Handle orders revenue: SUM(oi.quantity * m.price)
+  if (query.includes('from orders') || query.includes('from orderitems')) {
+     if (sumExpression.includes('price') && sumExpression.includes('quantity')) {
+        let totalRevenue = 0;
+        memoryDatabase.OrderItems.forEach(item => {
+           const medicine = memoryDatabase.Medicine.find(m => m.medicine_id === item.medicine_id);
+           if (medicine) {
+              totalRevenue += item.quantity * (medicine.price || 0);
+           }
+        });
+        return [{ [resultField]: totalRevenue }];
+     }
+     
+     if (sumExpression.includes('quantity')) {
+        const totalQuantity = memoryDatabase.OrderItems.reduce((total, item) => total + item.quantity, 0);
+        return [{ [resultField]: totalQuantity }];
+     }
   }
   
   return [{ [resultField]: 0 }];
@@ -673,7 +868,10 @@ function handleSumQuery(query: string, params: any[]): Array<Record<string, numb
 function handleWhereQuery(query: string, params: any[], tableName: string): any[] {
   // Handle case-insensitive table lookup
   const dbKey = Object.keys(memoryDatabase).find(k => k.toLowerCase() === tableName.toLowerCase());
-  if (!dbKey || !memoryDatabase[dbKey]) return [];
+  if (!dbKey || !memoryDatabase[dbKey]) {
+    console.log(`[MemoryDB] Table not found: ${tableName}`);
+    return [];
+  }
   
   const tableData = memoryDatabase[dbKey];
   
@@ -688,7 +886,10 @@ function handleWhereQuery(query: string, params: any[], tableName: string): any[
     const field = whereFieldMatch[1];
     const value = params[0];
     
-    return tableData.filter(item => item[field] == value); // Loose comparison
+    console.log(`[MemoryDB] Filtering ${dbKey} where ${field} = ${value}`);
+    const results = tableData.filter(item => String(item[field]) === String(value)); // Loose comparison with string conversion
+    console.log(`[MemoryDB] Found ${results.length} matches`);
+    return results;
   }
   
   return tableData;
