@@ -401,3 +401,309 @@
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
+
+
+/* ===== RESPONSIVE UTILITIES ===== */
+
+/* Mobile-first responsive breakpoints */
+/* xs: 0-639px (mobile) */
+/* sm: 640px-767px (large mobile) */
+/* md: 768px-1023px (tablet) */
+/* lg: 1024px-1279px (small desktop) */
+/* xl: 1280px+ (large desktop) */
+
+/* Touch-friendly tap targets - minimum 44x44px */
+@layer utilities {
+  .tap-target {
+    min-width: 44px;
+    min-height: 44px;
+    @apply flex items-center justify-center;
+  }
+  
+  .tap-target-sm {
+    min-width: 40px;
+    min-height: 40px;
+    @apply flex items-center justify-center;
+  }
+  
+  .tap-target-lg {
+    min-width: 48px;
+    min-height: 48px;
+    @apply flex items-center justify-center;
+  }
+}
+
+/* Responsive text sizes - readable without zooming */
+@layer base {
+  html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    h1 {
+      @apply text-2xl font-bold tracking-tight;
+    }
+    
+    h2 {
+      @apply text-xl font-semibold tracking-tight;
+    }
+    
+    h3 {
+      @apply text-lg font-semibold tracking-tight;
+    }
+    
+    h4 {
+      @apply text-base font-semibold tracking-tight;
+    }
+    
+    body {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+  }
+}
+
+/* Responsive container utilities */
+@layer components {
+  .container-responsive {
+    @apply w-full mx-auto px-4;
+  }
+  
+  @media (min-width: 640px) {
+    .container-responsive {
+      @apply px-6;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .container-responsive {
+      @apply px-8;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .container-responsive {
+      max-width: 1280px;
+    }
+  }
+}
+
+/* Responsive grid layouts */
+@layer utilities {
+  .grid-responsive {
+    @apply grid gap-4;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 640px) {
+    .grid-responsive {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .grid-responsive {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      @apply gap-6;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .grid-responsive {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+}
+
+/* Mobile navigation utilities */
+@layer components {
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 z-50;
+    @apply bg-background/95 backdrop-blur-lg border-t border-border/50;
+    @apply flex items-center justify-around;
+    @apply h-16 px-4;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (min-width: 768px) {
+    .mobile-nav {
+      @apply hidden;
+    }
+  }
+  
+  .mobile-nav-item {
+    @apply tap-target rounded-lg;
+    @apply flex flex-col items-center justify-center gap-1;
+    @apply text-xs font-medium;
+    @apply transition-colors duration-200;
+  }
+  
+  .mobile-nav-item:active {
+    @apply bg-accent/50;
+  }
+}
+
+/* Responsive table utilities */
+@layer components {
+  .table-responsive {
+    @apply w-full overflow-x-auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .table-responsive table {
+    @apply min-w-full;
+  }
+  
+  @media (max-width: 768px) {
+    .table-responsive {
+      @apply -mx-4;
+    }
+    
+    .table-responsive table {
+      min-width: 600px;
+    }
+  }
+}
+
+/* Touch-optimized scrollbars */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border/50;
+  }
+}
+
+/* Responsive spacing utilities */
+@layer utilities {
+  .spacing-responsive {
+    @apply p-4;
+  }
+  
+  @media (min-width: 768px) {
+    .spacing-responsive {
+      @apply p-6;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .spacing-responsive {
+      @apply p-8;
+    }
+  }
+}
+
+/* Mobile-optimized cards */
+@layer components {
+  .card-responsive {
+    @apply glass-card;
+  }
+  
+  @media (max-width: 768px) {
+    .card-responsive {
+      @apply rounded-lg p-4;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .card-responsive {
+      @apply p-6;
+    }
+  }
+}
+
+/* Responsive flex utilities */
+@layer utilities {
+  .flex-responsive {
+    @apply flex flex-col gap-4;
+  }
+  
+  @media (min-width: 768px) {
+    .flex-responsive {
+      @apply flex-row gap-6;
+    }
+  }
+}
+
+/* Hide/show utilities for different breakpoints */
+@layer utilities {
+  .mobile-only {
+    @apply block;
+  }
+  
+  @media (min-width: 768px) {
+    .mobile-only {
+      @apply hidden;
+    }
+  }
+  
+  .desktop-only {
+    @apply hidden;
+  }
+  
+  @media (min-width: 768px) {
+    .desktop-only {
+      @apply block;
+    }
+  }
+  
+  .tablet-up {
+    @apply hidden;
+  }
+  
+  @media (min-width: 768px) {
+    .tablet-up {
+      @apply block;
+    }
+  }
+}
+
+/* Responsive image utilities */
+@layer utilities {
+  .img-responsive {
+    @apply w-full h-auto;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Mobile-optimized forms */
+@layer components {
+  .form-responsive {
+    @apply space-y-4;
+  }
+  
+  @media (max-width: 768px) {
+    .form-responsive input,
+    .form-responsive select,
+    .form-responsive textarea {
+      @apply text-base;
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* Responsive modal/dialog */
+@layer components {
+  @media (max-width: 768px) {
+    [role="dialog"] {
+      @apply max-w-[95vw] max-h-[90vh];
+    }
+  }
+}
+
+/* Safe area insets for mobile devices with notches */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+  
+  .mobile-nav {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}

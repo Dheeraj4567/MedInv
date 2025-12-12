@@ -27,6 +27,35 @@ MedInv is a comprehensive web application for managing medical inventory, patien
 - Expiry alerts and notifications
 - Analytics and reporting
 - Role-based access control
+- **Fully Responsive Design** - Optimized for mobile, tablet, and desktop devices with touch-friendly controls
+
+## Responsive Mobile-First Design
+
+MedInv features a comprehensive responsive web interface that provides an optimal viewing experience across all devices:
+
+### Mobile Optimization
+- **Touch-Friendly Controls**: All interactive elements meet WCAG 2.1 guidelines with minimum 44x44px tap targets
+- **Hamburger Menu**: Collapsible sidebar with smooth slide-in animation and overlay
+- **Responsive Tables**: Horizontal scroll with touch-optimized scrolling for data tables
+- **Adaptive Typography**: Readable font sizes (16px minimum) without requiring zoom
+- **Optimized Layouts**: Content reflows naturally on smaller screens
+
+### Tablet & Desktop Features
+- **Auto-Expanding Sidebar**: Hover to expand on desktop, manual toggle on tablet
+- **Flexible Grid Layouts**: Automatically adjusts columns based on screen size
+- **Enhanced Interactions**: Hover states and mouse-based interactions preserved
+- **Maximum Content Width**: Centered layout on large screens (1280px max)
+
+### Progressive Enhancement
+- Core functionality works universally across all devices
+- Enhanced features activate based on device capabilities
+- CSS-based responsive design (no JavaScript required for layout)
+- Hardware-accelerated animations for smooth performance
+
+### Breakpoint System
+- **Mobile**: < 768px (1 column layouts, stacked navigation)
+- **Tablet**: 768px - 1023px (2 column layouts, collapsible sidebar)
+- **Desktop**: ≥ 1024px (3-4 column layouts, full sidebar)
 
 ## Deployment Options
 

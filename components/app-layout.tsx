@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import PageLoader from "@/components/page-loader";
 import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -17,14 +20,22 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isMobile = useIsMobile();
 
   // Load sidebar state from localStorage on mount
   useEffect(() => {
     try {
       const savedState = localStorage.getItem('sidebarCollapsed');
-      if (savedState !== null) {
+      if (savedState !== null && !isMobile) {
         setIsSidebarCollapsed(JSON.parse(savedState));
+      }
+      
+      // On mobile, always start collapsed
+      if (isMobile) {
+        setIsSidebarCollapsed(true);
+        setMobileMenuOpen(false);
       }
       
       // Always ensure sidebar is visible on mount (except login)
@@ -34,7 +45,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     } catch (error) {
       console.error('Error loading sidebar state:', error);
     }
-  }, [pathname]);
+  }, [pathname, isMobile]);
 
   // Save sidebar state to localStorage
   useEffect(() => {
@@ -58,8 +69,33 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => clearTimeout(timer);
   }, [pathname]);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    if (isMobile) {
+      setMobileMenuOpen(false);
+    }
+  }, [pathname, isMobile]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobile && mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen, isMobile]);
+
   // Handle sidebar toggle
-  const toggleSidebar = () => setIsSidebarCollapsed(prev => !prev);
+  const toggleSidebar = () => {
+    if (isMobile) {
+      setMobileMenuOpen(prev => !prev);
+    } else {
+      setIsSidebarCollapsed(prev => !prev);
+    }
+  };
 
   // Handle sidebar auto-expand state
   const handleSidebarExpandChange = (expanded: boolean) => {
@@ -76,34 +112,76 @@ export function AppLayout({ children }: AppLayoutProps) {
           <PageLoader />
         ) : (
           <div className="flex h-screen overflow-hidden">
-            {/* Sidebar - always render with fixed positioning and higher z-index */}
-            {shouldRenderSidebar && isSidebarVisible && (
-              <Sidebar 
-                collapsed={isSidebarCollapsed}
-                toggleCollapsed={toggleSidebar}
-                className="fixed left-0 top-0 h-screen z-50"
-                onExpandChange={handleSidebarExpandChange}
+            {/* Mobile Menu Button */}
+            {shouldRenderSidebar && isMobile && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "fixed top-4 left-4 z-50 tap-target",
+                  "bg-background/95 backdrop-blur-lg border border-border/50",
+                  "shadow-lg hover:shadow-xl transition-all"
+                )}
+                onClick={toggleSidebar}
+              >
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </Button>
+            )}
+
+            {/* Mobile Overlay */}
+            {isMobile && mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40"
+                onClick={() => setMobileMenuOpen(false)}
               />
+            )}
+
+            {/* Sidebar */}
+            {shouldRenderSidebar && isSidebarVisible && (
+              <div className={cn(
+                isMobile && "fixed inset-y-0 left-0 z-50",
+                isMobile && !mobileMenuOpen && "-translate-x-full",
+                isMobile && "transition-transform duration-300 ease-in-out"
+              )}>
+                <Sidebar
+                  collapsed={isMobile ? false : isSidebarCollapsed}
+                  toggleCollapsed={toggleSidebar}
+                  className={cn(
+                    "h-screen",
+                    !isMobile && "fixed left-0 top-0 z-50"
+                  )}
+                  onExpandChange={handleSidebarExpandChange}
+                />
+              </div>
             )}
             
             {/* Main content area */}
-            <main 
+            <main
               className={cn(
-                "flex-1 overflow-y-auto h-screen transition-all duration-300 ease-in-out bg-muted/10", // Added subtle background
-                shouldRenderSidebar && !isSidebarCollapsed && isSidebarVisible && "ml-[260px]",
-                shouldRenderSidebar && isSidebarCollapsed && isSidebarVisible && "ml-[70px]",
-                (!isSidebarVisible || !shouldRenderSidebar) && "ml-0",
-                "p-8" // Consistent spacious padding
+                "flex-1 overflow-y-auto h-screen transition-all duration-300 ease-in-out bg-muted/10",
+                // Desktop margins
+                !isMobile && shouldRenderSidebar && !isSidebarCollapsed && isSidebarVisible && "ml-[260px]",
+                !isMobile && shouldRenderSidebar && isSidebarCollapsed && isSidebarVisible && "ml-[70px]",
+                // Mobile - no left margin, add top padding for menu button
+                isMobile && shouldRenderSidebar && "pt-16",
+                // Responsive padding
+                isMobile ? "p-4" : "p-6 md:p-8"
               )}
             >
               <AnimatePresence mode="wait">
-                <motion.div 
+                <motion.div
                   key={pathname}
-                  initial={{ opacity: 0, y: 10 }} // Added slight slide up
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="h-full max-w-7xl mx-auto" // Center content on very large screens
+                  className={cn(
+                    "h-full w-full",
+                    !isMobile && "max-w-7xl mx-auto"
+                  )}
                 >
                   {children}
                 </motion.div>

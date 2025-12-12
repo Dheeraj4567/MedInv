@@ -21,10 +21,10 @@ const buttonVariants = cva(
         glowing: "bg-yellow-500 text-yellow-950 hover:bg-yellow-400 relative before:absolute before:inset-0 before:rounded-md before:bg-gradient-to-r before:from-yellow-400/50 before:via-transparent before:to-yellow-400/50 before:opacity-0 hover:before:opacity-100 before:transition-opacity after:absolute after:inset-0 after:rounded-md after:shadow-[0_0_20px_rgba(234,179,8,0.4)] after:opacity-0 hover:after:opacity-100 after:transition-opacity",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        default: "h-11 px-4 py-2 min-h-[44px]",
+        sm: "h-10 rounded-md px-3 min-h-[40px]",
+        lg: "h-12 rounded-md px-8 min-h-[48px]",
+        icon: "h-11 w-11 min-h-[44px] min-w-[44px]",
       },
     },
     defaultVariants: {

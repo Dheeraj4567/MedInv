@@ -32,6 +32,8 @@ import {
   Search,
   X,
 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -49,6 +51,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const isMobile = useIsMobile();
 
   const table = useReactTable({
     data,
@@ -86,18 +89,22 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className={cn(
+        "flex items-center gap-2",
+        isMobile ? "flex-col" : "flex-row justify-between"
+      )}>
         <Input
           placeholder={`Search ${searchKey || "..."}`}
           value={globalFilter}
           onChange={handleSearchChange}
-          className="max-w-sm"
+          className={cn(isMobile ? "w-full" : "max-w-sm")}
         />
-        <Button onClick={exportToCsv}>
+        <Button onClick={exportToCsv} className={cn(isMobile && "w-full")}>
           <Download className="mr-2 h-4 w-4" /> Export
         </Button>
       </div>
-      <Table>
+      <div className="table-responsive rounded-md border">
+        <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -130,23 +137,36 @@ export function DataTable<TData, TValue>({
             ))
           )}
         </TableBody>
-      </Table>
-      <div className="flex items-center justify-between">
+        </Table>
+      </div>
+      <div className={cn(
+        "flex items-center",
+        isMobile ? "flex-col gap-4" : "flex-row justify-between"
+      )}>
         <div className="flex items-center space-x-2">
           <Button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            size={isMobile ? "default" : "default"}
+            variant="outline"
           >
             <ChevronLeft className="h-4 w-4" />
+            {!isMobile && <span className="ml-2">Previous</span>}
           </Button>
           <Button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            size={isMobile ? "default" : "default"}
+            variant="outline"
           >
+            {!isMobile && <span className="mr-2">Next</span>}
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
-        <span>
+        <span className={cn(
+          "text-sm text-muted-foreground",
+          isMobile && "text-center"
+        )}>
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </span>
       </div>
